@@ -18,37 +18,37 @@ Route::prefix('admin')
 
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Route::prefix('order')->as('order.')->group(function () {
-        //     Route::get('/', [OrderController::class, 'index'])->name('index');
-        //     Route::put('{order}', [OrderController::class, 'update'])->name('update');
-        //     Route::get('detail/{order}', [OrderController::class, 'detail'])->name('detail');
-        // });
+        Route::prefix('order')->as('order.')->group(function () {
+            Route::get('/', [OrderController::class, 'index'])->name('index');
+            Route::put('{order}', [OrderController::class, 'update'])->name('update');
+            Route::get('detail/{order}', [OrderController::class, 'detail'])->name('detail');
+        });
 
-        // Route::prefix('catalogues')
-        //     ->as('catalogues.')
-        //     ->group(function () {
-        //         Route::get('/',                [CatalogueController::class, 'index'])->name('index');
-        //         Route::get('create',           [CatalogueController::class, 'create'])->name('create');
-        //         Route::post('store',           [CatalogueController::class, 'store'])->name('store');
-        //         Route::get('show/{id}',        [CatalogueController::class, 'show'])->name('show');
-        //         Route::get('{id}/edit',        [CatalogueController::class, 'edit'])->name('edit');
-        //         Route::put('{id}/update',      [CatalogueController::class, 'update'])->name('update');
-        //         Route::get('{id}/destroy',     [CatalogueController::class, 'destroy'])->name('destroy');
-        //     });
+        Route::prefix('catalogues')
+            ->as('catalogues.')
+            ->group(function () {
+                Route::get('/',                [CatalogueController::class, 'index'])->name('index');
+                Route::get('create',           [CatalogueController::class, 'create'])->name('create');
+                Route::post('store',           [CatalogueController::class, 'store'])->name('store');
+                Route::get('show/{id}',        [CatalogueController::class, 'show'])->name('show');
+                Route::get('{id}/edit',        [CatalogueController::class, 'edit'])->name('edit');
+                Route::put('{id}/update',      [CatalogueController::class, 'update'])->name('update');
+                Route::get('{id}/destroy',     [CatalogueController::class, 'destroy'])->name('destroy');
+            });
 
-        // Route::resource('products', ProductController::class);
+        Route::resource('products', ProductController::class);
 
-        // Route::resource('users', UserController::class);
+        Route::resource('users', UserController::class);
 
-        // Route::resource('banners', BannerController::class);
+        Route::resource('banners', BannerController::class);
 
-        // Route::resource('coupon', CouponController::class);
+        Route::resource('coupon', CouponController::class);
 
-        // Route::prefix('comment')->as('comments.')->group(function () {
-        //     Route::get('/', [CommentController::class, 'index'])->name('index');
-        //     Route::post('sort-delete/{comment}', [CommentController::class, 'sortDelete'])->name('sortdelete');
-        //     Route::post('restore/{id}', [CommentController::class, 'restore'])->name('restore');
-        // });
+        Route::prefix('comment')->as('comments.')->group(function () {
+            Route::get('/', [CommentController::class, 'index'])->name('index');
+            Route::post('sort-delete/{comment}', [CommentController::class, 'sortDelete'])->name('sortdelete');
+            Route::post('restore/{id}', [CommentController::class, 'restore'])->name('restore');
+        });
     });
 
 Route::prefix('admin')->as('admin.')->group(function () {
