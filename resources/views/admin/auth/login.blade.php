@@ -80,6 +80,12 @@
                                                     <strong>{{ $message }}</strong>
                                                 </span>
                                             @enderror
+
+                                            @session('error')
+                                                <span class="invalid-feedback" style="display:block" role="alert">
+                                                    <strong>{{ session('error') }}</strong>
+                                                </span>
+                                            @endsession
                                         </div>
 
                                         <div class="mb-3">

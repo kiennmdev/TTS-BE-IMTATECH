@@ -50,6 +50,16 @@
                                         <input type="text" class="form-control" id="password" placeholder="Enter password"
                                             name="password" value="{{$user->password}}">
                                     </div> --}}
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Phone number:</label>
+                                        <input type="text" class="form-control" id="phone" placeholder="Enter phone"
+                                            name="phone" value="{{$user->phone}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="address" class="form-label">Address:</label>
+                                        <input type="text" class="form-control" id="address" placeholder="Enter address"
+                                            name="address" value="{{$user->address}}">
+                                    </div>
                                 </div>
                                 <div class="col-5">
                                     <div class="mb-3">

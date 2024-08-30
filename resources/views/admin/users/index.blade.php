@@ -30,7 +30,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h5 class="card-title mb-0">Basic Datatables</h5>
-                    <a href="{{ route('admin.catalogues.create') }}" class="btn btn-success">+ Thêm mới</a>
+                    <a href="{{ route('admin.users.create') }}" class="btn btn-success">+ Thêm mới</a>
                 </div>
                 <div class="card-body">
                     <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle"

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Catalogue;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class CatalogueController extends Controller
@@ -34,27 +35,15 @@ class CatalogueController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->except('cover'); //Nghĩa là tôi lấy tất cả input đầu vào ngoại trừ trường cover
-        //Cách 1:
-        // $data['is_active'] = $data['is_active'] ?? 0;
+        $data = $request->except('cover');
+        $data['slug'] = Str::slug($data['name']);
         $data['is_active'] ??= 0;
-        //Cách 2:
-        // $data['is_active'] = $request->input('is_active', 0);
-        
-        // dd($data);
-        // $data = request()->all();
-        // unset($data['cover']);
-
+  
         //upload file
-
-        // dd($request->hasFile('cover'));
         if($request->hasFile('cover')) {
             $data['cover'] = Storage::put(self::PATH_UPLOAD,$request->file('cover'));
         }
         
-        // DB::table('catalogues')->insert($data);
-
-        // dd($data);
         Catalogue::query()->create($data);
         return redirect()->route(self::PATH_VIEW . 'index');
     }
@@ -65,10 +54,6 @@ class CatalogueController extends Controller
     public function show(string $id)
     {
         $model = Catalogue::query()->findOrFail($id);
-
-        // if(!$model) {
-        //     abort(404);
-        // }
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('model'));
     }
@@ -90,7 +75,8 @@ class CatalogueController extends Controller
     {
         $model = Catalogue::query()->findOrFail($id);
         // dd($model->cover);
-        $data = $request->except('cover'); //Nghĩa là tôi lấy tất cả input đầu vào ngoại trừ trường cover
+        $data = $request->except('cover'); 
+        $data['slug'] = Str::slug($data['name']);
         $data['is_active'] ??= 0;
         
         if($request->hasFile('cover')) {

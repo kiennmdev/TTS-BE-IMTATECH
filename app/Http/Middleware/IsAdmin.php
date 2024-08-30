@@ -19,7 +19,9 @@ class IsAdmin
         if(Auth::user()->isAdmin()) {
 
             return $next($request);
-
+            
         }
+
+        return redirect()->route('admin.login')->with('error', 'Tài khoản này không tồn tại');
     }
 }
