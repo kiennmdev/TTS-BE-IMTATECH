@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Tag;
+use App\Models\Catalogue;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +22,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $catalogues = Catalogue::query()->get();
+        $tags = Tag::query()->get();
+        View::share('catalogues', $catalogues);
+        View::share('tags', $tags);
     }
 }

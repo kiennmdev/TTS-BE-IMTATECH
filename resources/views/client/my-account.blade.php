@@ -51,7 +51,7 @@
                             @if (Auth::user()->type === 'admin')
                                 <li class="nav-item">
                                     <a class="nav-link" id="account-logout-tab" href="{{ route('admin.dashboard') }}"
-                                        role="tab" aria-selected="false">Admin</a>
+                                        role="tab" aria-selected="false">Website Management</a>
                                 </li>
                             @endif
                         </ul>
