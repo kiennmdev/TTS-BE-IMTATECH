@@ -20,11 +20,9 @@ class Product extends Model
         'description',
         'content',
         'material',
-        'user_manual',
         'views',
         'is_active',
         'is_hot_deal',
-        'is_good_deal',
         'is_new',
         'is_show_home',
     ];
@@ -32,7 +30,6 @@ class Product extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'is_hot_deal' => 'boolean',
-        'is_good_deal' => 'boolean',
         'is_new' => 'boolean',
         'is_show_home' => 'boolean',
     ];

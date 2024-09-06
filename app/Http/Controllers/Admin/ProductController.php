@@ -26,11 +26,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        // $catalogue = Catalogue::query()->first();
-        // dd($catalogue->product);
         $data = Product::query()->with(['catalogue', 'tags'])->latest('id')->get();
-        // dd($data);
-        // dd($data->first()->toArray());
+
         return view(self::PATH_VIEW . __FUNCTION__, compact('data'));
     }
 
@@ -40,7 +37,7 @@ class ProductController extends Controller
     public function create()
     {
         $catalogues = Catalogue::query()->pluck('name', 'id')->all();
-        $colors = ProductColor::query()->pluck('name', 'id')->all();
+        $colors = ProductColor::query()->pluck('code', 'id')->all();
         $sizes = ProductSize::query()->pluck('name', 'id')->all();
         $tags = Tag::query()->pluck('name', 'id')->all();
 
@@ -55,11 +52,6 @@ class ProductController extends Controller
         // dd($request->all());
         $dataProduct = $request->except('product_variants', 'tags', 'product_galleries');
         // dd($dataProduct);
-        $dataProduct['is_active'] ??= 0;
-        $dataProduct['is_hot_deal'] ??= 0;
-        $dataProduct['is_new'] ??= 0;
-        $dataProduct['is_show_home'] ??= 0;
-        $dataProduct['is_good_deal'] ??= 0;
 
         $dataProduct['slug'] = Str::slug($dataProduct['name']) . '-' . $dataProduct['sku'];
 
@@ -80,7 +72,7 @@ class ProductController extends Controller
                 'image' => $item['image'] ?? null
             ];
         }
-        // dd($dataProduct);
+        // dd($dataProductVariants);
 
         $dataProductTags = $request->tags;
         $dataProductGalleries = $request->product_galleries ?: [];
@@ -144,7 +136,7 @@ class ProductController extends Controller
         $productEdit = Product::with(['catalogue', 'tags', 'galleries', 'variants'])->find($product->id);
         // dd($productEdit->galleries);
         $catalogues = Catalogue::query()->pluck('name', 'id')->all();
-        $colors = ProductColor::query()->pluck('name', 'id')->all();
+        $colors = ProductColor::query()->pluck('code', 'id')->all();
         $sizes = ProductSize::query()->pluck('name', 'id')->all();
         $tags = Tag::query()->pluck('name', 'id')->all();
         return view(self::PATH_VIEW . __FUNCTION__, compact('productEdit', 'catalogues', 'colors', 'sizes', 'tags'));
@@ -156,13 +148,8 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         // dd($request->all());
-        $dataProduct = $request->except('product_variants', 'tags', 'product_galleries', '_token', '_method');
+        $dataProduct = $request->except('product_variants', 'tags', 'product_galleries', '_token', '_method', 'search_terms');
         $dataProduct['id'] = $product->id;
-        $dataProduct['is_active'] ??= 0;
-        $dataProduct['is_hot_deal'] ??= 0;
-        $dataProduct['is_good_deal'] ??= 0;
-        $dataProduct['is_new'] ??= 0;
-        $dataProduct['is_show_home'] ??= 0;
         // dd($dataProduct);
         if (isset($dataProduct['img_thumbnail'])) {
             $dataProduct['img_thumbnail'] = Storage::put('products', $dataProduct['img_thumbnail']);

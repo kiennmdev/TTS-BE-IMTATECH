@@ -69,3 +69,7 @@ Route::middleware(['is.login'])->group(function () {
     Route::post('/comment', [CommentController::class, 'save'])->name('comment.save');
     
 });
+
+Route::get('test', function () {
+    return view('admin.products.test');
+});

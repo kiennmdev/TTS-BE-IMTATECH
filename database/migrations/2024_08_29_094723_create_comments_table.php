@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained();
             $table->foreignIdFor(Product::class)->constrained();
             $table->text('content');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
