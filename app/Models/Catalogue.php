@@ -11,7 +11,6 @@ class Catalogue extends Model
 
     protected $fillable = [
         'name',
-        'cover',
         'is_active',
         'slug'
     ];

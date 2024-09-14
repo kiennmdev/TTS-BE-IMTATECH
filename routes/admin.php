@@ -8,7 +8,9 @@ use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ProductColorController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductSizeController;
 use App\Http\Controllers\Admin\UserController;
 
 Route::prefix('admin')
@@ -49,6 +51,24 @@ Route::prefix('admin')
             Route::post('sort-delete/{comment}', [CommentController::class, 'sortDelete'])->name('sortdelete');
             Route::post('restore/{id}', [CommentController::class, 'restore'])->name('restore');
         });
+
+        Route::prefix('product/colors')
+            ->as('product.colors.')
+            ->group(function () {
+                Route::get('/', [ProductColorController::class, 'index'])->name('index');
+                Route::post('/store', [ProductColorController::class, 'store'])->name('store');
+                Route::put('{id}/', [ProductColorController::class, 'update'])->name('update');
+                Route::delete('{id}/delete', [ProductColorController::class, 'destroy'])->name('destroy');
+            });
+
+        Route::prefix('product/sizes')
+            ->as('product.sizes.')
+            ->group(function () {
+                Route::get('/', [ProductSizeController::class, 'index'])->name('index');
+                Route::post('/store', [ProductSizeController::class, 'store'])->name('store');
+                Route::put('{id}/', [ProductSizeController::class, 'update'])->name('update');
+                Route::delete('{id}/delete', [ProductSizeController::class, 'destroy'])->name('destroy');
+            });
     });
 
 Route::prefix('admin')->as('admin.')->group(function () {

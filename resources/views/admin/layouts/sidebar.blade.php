@@ -98,11 +98,15 @@
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{route('admin.products.index')}}" target="_blank" class="nav-link"
-                                    data-key="t-horizontal">Danh sách</a>
+                                    data-key="t-horizontal">Danh sách sản phẩm</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{route('admin.products.create')}}" target="_blank" class="nav-link"
-                                    data-key="t-detached">Thêm mới</a>
+                                <a href="{{route('admin.product.colors.index')}}" target="_blank" class="nav-link"
+                                    data-key="t-detached">Danh sách màu</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{route('admin.product.sizes.index')}}" target="_blank" class="nav-link"
+                                    data-key="t-detached">Danh sách kích cỡ</a>
                             </li>
                            
                         </ul>

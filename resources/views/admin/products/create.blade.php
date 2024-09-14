@@ -123,11 +123,58 @@
                     <div class="card-header align-items-center d-flex">
                         <h4 class="card-title mb-0 flex-grow-1">Biến thể</h4>
                     </div><!-- end card header -->
-                    <div class="card-body" style="height: 300px; overflow: scroll">
+                    <div class="card-body">
                         <div class="live-preview">
                             <div class="row gy-4">
+                                <div class="card">
+                                    <h5 class="fs-14 mb-3">Chọn thuộc tính sản phẩm</h5>
+                                    <div class="">
+                                        <div class="fs-14 mb-1">Màu sắc:</div>
+                                        <div>
+                                            <div class="color-container">
+                                                @foreach ($colors as $color)
+                                                    <div class="border-color">
+                                                        <div class="color-product" data-index="{{ $color->id }}"
+                                                            style="background-color: {{ $color->code }};"></div>
+                                                        <input type="checkbox" id="color{{ $color->id }}"
+                                                            style="display: none;"
+                                                            value="{{ "$color->id-$color->name" }}">
+                                                    </div>
+                                                @endforeach
 
-                                <table class="table table-bordered">
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="fs-14 mb-1">Kích thước:</div>
+                                        <div>
+                                            <div class="color-container">
+                                                @foreach ($sizes as $sizeID => $sizeName)
+                                                    <div class="border-size">
+                                                        <div class="size-product align-middle text-center"
+                                                            data-index="{{ $sizeID }}">{{ $sizeName }}</div>
+                                                        <input type="checkbox" id="size{{ $sizeID }}"
+                                                            style="display: none;" value="{{ "$sizeID-$sizeName" }}">
+                                                    </div>
+                                                @endforeach
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div id="save-property" class="d-flex justify-content-end mb-2"><button
+                                            type="button" class="btn btn-primary">Lưu thuộc tính</button></div>
+                                </div>
+                                <div class="">
+                                    <button type="button" id="addProperty" class="btn btn-primary d-none mb-2"
+                                        onclick="addBoxProperty()">Thêm biến thể</button>
+                                    <div id="properties" class="row"></div>
+                                </div>
+
+
+                                {{-- <table class="table table-bordered">
                                     <tr>
                                         <th>Size</th>
                                         <th>Color</th>
@@ -150,7 +197,7 @@
 
                                                 <td class="d-flex justify-content-center align-items-center">
                                                     <div
-                                                        style="width: 40px; height: 40px; background-color: {{ $colorName }}">
+                                                        style="width: 40px; height: 40px; border-radius:50%; background-color: {{ $colorName }}">
                                                     </div>
                                                 </td>
                                                 <td>
@@ -170,7 +217,7 @@
                                             @endphp
                                         @endforeach
                                     @endforeach
-                                </table>
+                                </table> --}}
                             </div>
                             <!--end row-->
                         </div>
@@ -191,24 +238,24 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label for="Hot Deal" class="form-label">Hot Deal</label>
-                            <select class="form-select" name="is_hot_deal" id="Hot Deal"
-                                data-choices data-choices-search-false>
+                            <select class="form-select" name="is_hot_deal" id="Hot Deal" data-choices
+                                data-choices-search-false>
                                 <option value="1" selected>Public</option>
                                 <option value="0">Hidden</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="New" class="form-label">New</label>
-                            <select class="form-select" name="is_new" id="New"
-                                data-choices data-choices-search-false>
+                            <select class="form-select" name="is_new" id="New" data-choices
+                                data-choices-search-false>
                                 <option value="1" selected>Public</option>
                                 <option value="0">Hidden</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="Show Home" class="form-label">Show Home</label>
-                            <select class="form-select" name="is_show_home" id="Show Home"
-                                data-choices data-choices-search-false>
+                            <select class="form-select" name="is_show_home" id="Show Home" data-choices
+                                data-choices-search-false>
                                 <option value="1" selected>Public</option>
                                 <option value="0">Hidden</option>
                             </select>
@@ -319,7 +366,37 @@
 
 @section('style-libs')
     <!-- Plugins css -->
-    <link href="{{asset('theme/admin/assets/libs/dropzone/dropzone.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css" />
+@endsection
+
+@section('styles')
+    <style>
+        .color-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .color-product,
+        .size-product {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 1px;
+        }
+
+        .border-color,
+        .border-size {
+            border: 1px solid #ddd;
+            padding: 2px;
+        }
+
+        .selected-color,
+        .selected-size {
+            border: 0.5px solid rgb(84, 84, 84);
+        }
+    </style>
 @endsection
 
 @section('script-libs')
@@ -335,37 +412,5 @@
 @endsection
 
 @section('scripts')
-    <script>
-        CKEDITOR.replace('content');
-
-        let id = 'gen' + '_' + Math.random().toString(36).substring(2, 15).toLowerCase();
-
-        let addGalleryBtn = document.getElementById('addGallery')
-
-        addGalleryBtn.addEventListener('click', (e) => {
-
-            let addGalleryElement = `<div id="box_${id}" class="col-xxl-6 col-md-6">
-                
-                <div>
-                    <label for="gallery_${id}" class="form-label">Image gallery</label>
-                    <div class="d-flex">
-                        <input type="file" class="form-control" id="gallery_${id}"
-                        name="product_galleries[]">
-                        <button type="button" class="btn btn-danger" onclick="removeGalleryImg('box_${id}')"><span class="bx bx-trash"></span></button>
-                    </div>
-                </div>
-
-            </div>`;
-
-            let boxGalleryImg = document.getElementById('boxGalleryImg')
-
-            $(boxGalleryImg).append(addGalleryElement);
-        })
-
-        function removeGalleryImg(param) {
-            if (confirm('Bạn có muốn xóa không?')) {
-                $(`#${param}`).remove()
-            }
-        }
-    </script>
+    <script src="{{asset('js/product-create.js')}}"></script>
 @endsection

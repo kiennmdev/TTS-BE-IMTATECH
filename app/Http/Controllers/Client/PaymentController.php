@@ -49,8 +49,8 @@ class PaymentController extends Controller
         $orderInfo = "Thanh toán qua MoMo";
         $amount = session('order')['total_price'];
         $orderId = time() . "";
-        $redirectUrl = "http://xuong-laravel-v2.test/handle/momo";
-        $ipnUrl = "http://xuong-laravel-v2.test/handle/momo";
+        $redirectUrl = "http://tts-be-imtatech.test/handle/momo";
+        $ipnUrl = "http://tts-be-imtatech.test/handle/momo";
         $extraData = "";
 
         $requestId = time() . "";
@@ -86,11 +86,15 @@ class PaymentController extends Controller
 
     public function handleOrder(Request $request)
     {
+
         $resultCode = $request->query('resultCode');
 
         if($resultCode == '1006') {
+
             return redirect()->route('checkout.view');
+
         } else {
+
             $userInfo = session('order');
 
             try {

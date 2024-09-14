@@ -502,7 +502,7 @@
 
                                                 <td class="d-flex justify-content-center align-items-center">
                                                     <div
-                                                        style="width: 40px; height: 40px; background-color: {{ $colorName }}">
+                                                        style="width: 40px; height: 40px; border-radius:50%; background-color: {{ $colorName }}">
                                                     </div>
                                                 </td>
                                                 <td>

@@ -38,13 +38,9 @@ class CatalogueController extends Controller
         $data = $request->except('cover');
         $data['slug'] = Str::slug($data['name']);
         $data['is_active'] ??= 0;
-  
-        //upload file
-        if($request->hasFile('cover')) {
-            $data['cover'] = Storage::put(self::PATH_UPLOAD,$request->file('cover'));
-        }
         
         Catalogue::query()->create($data);
+        
         return redirect()->route(self::PATH_VIEW . 'index');
     }
 
@@ -79,9 +75,6 @@ class CatalogueController extends Controller
         $data['slug'] = Str::slug($data['name']);
         $data['is_active'] ??= 0;
         
-        if($request->hasFile('cover')) {
-            $data['cover'] = Storage::put(self::PATH_UPLOAD,$request->file('cover'));
-        } 
         // dd($data);
 
         $currentCover = $model->cover;

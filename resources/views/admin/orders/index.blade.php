@@ -32,9 +32,9 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center gy-3">
                             <div class="col-sm">
-                                <h5 class="card-title mb-0">Order History</h5>
+                                <h5 class="card-title mb-0">Danh sách đơn hàng</h5>
                             </div>
-                            <div class="col-sm-auto">
+                            {{-- <div class="col-sm-auto">
                                 <div class="d-flex gap-1 flex-wrap">
                                     <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal"
                                         id="create-btn" data-bs-target="#showModal"><i
@@ -44,13 +44,13 @@
                                     <button class="btn btn-soft-danger" id="remove-actions" onClick="deleteMultiple()"><i
                                             class="ri-delete-bin-2-line"></i></button>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="card-body border border-dashed border-end-0 border-start-0">
                         <form>
                             <div class="row g-3">
-                                <div class="col-xxl-5 col-sm-6">
+                                <div class="col-xxl-5 col-sm-6 mb-3">
                                     <div class="search-box">
                                         <input type="text" class="form-control search"
                                             placeholder="Search for order ID, customer, order status or something...">
@@ -221,13 +221,13 @@
                                                     @endforeach
                                                 </td>
                                                 <td>
-                                                    <ul class="list-inline hstack gap-2 mb-0">
+                                                    <ul class="list-inline hstack mb-0">
                                                         <li class="list-inline-item" data-bs-toggle="tooltip"
                                                             data-bs-trigger="hover" data-bs-placement="top"
                                                             title="View">
                                                             <a href="{{ route('admin.order.detail', $order) }}"
-                                                                class="text-primary d-inline-block">
-                                                                <i class="ri-eye-fill fs-16"></i>
+                                                                class="btn btn-soft-info">
+                                                                <i class=" ri-eye-line"></i>
                                                             </a>
                                                         </li>
                                                         <li class="list-inline-item edit" data-bs-toggle="tooltip"
@@ -235,8 +235,8 @@
                                                             title="Edit">
                                                             <a href="#showModal{{ $order->id }}"
                                                                 data-bs-toggle="modal"
-                                                                class="text-primary d-inline-block edit-item-btn">
-                                                                <i class="ri-pencil-fill fs-16"></i>
+                                                                class="btn btn-soft-warning">
+                                                                <i class="ri-edit-2-line"></i>
                                                             </a>
                                                         </li>
                                                         {{-- <li class="list-inline-item" data-bs-toggle="tooltip"

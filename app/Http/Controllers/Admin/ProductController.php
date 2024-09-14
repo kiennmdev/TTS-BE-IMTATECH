@@ -37,7 +37,7 @@ class ProductController extends Controller
     public function create()
     {
         $catalogues = Catalogue::query()->pluck('name', 'id')->all();
-        $colors = ProductColor::query()->pluck('code', 'id')->all();
+        $colors = ProductColor::query()->get(['id', 'name', 'code']);
         $sizes = ProductSize::query()->pluck('name', 'id')->all();
         $tags = Tag::query()->pluck('name', 'id')->all();
 
@@ -59,19 +59,18 @@ class ProductController extends Controller
             $dataProduct['img_thumbnail'] = Storage::put('products', $dataProduct['img_thumbnail']);
         }
 
-        $dataProductVariantsTMP = $request->product_variants;
         $dataProductVariants = [];
-        foreach ($dataProductVariantsTMP as $key => $item) {
-
-            $tmp = explode('-', $key);
-
-            $dataProductVariants[] = [
-                'product_size_id' => $tmp[0],
-                'product_color_id' => $tmp[1],
-                'quantity' => $item['quantity'],
-                'image' => $item['image'] ?? null
-            ];
+        $dataColors = $request->colors;
+        $dataSizes = $request->sizes;
+        foreach ($dataColors as $color) {
+            foreach ($dataSizes as $size) {
+                $dataProductVariants[] = [
+                    "product_color_id" => $color,
+                    "product_size_id" => $size
+                ];
+            }
         }
+
         // dd($dataProductVariants);
 
         $dataProductTags = $request->tags;
@@ -86,9 +85,6 @@ class ProductController extends Controller
 
             foreach ($dataProductVariants as $dataProductVariant) {
                 $dataProductVariant['product_id'] = $product->id;
-                if ($dataProductVariant['image']) {
-                    $dataProductVariant['image'] = Storage::put('products', $dataProductVariant['image']);
-                }
 
                 ProductVariant::query()->create($dataProductVariant);
             }
@@ -123,9 +119,7 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
-    {
-    }
+    public function show(Product $product) {}
 
     /**
      * Show the form for editing the specified resource.

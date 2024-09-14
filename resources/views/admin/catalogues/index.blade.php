@@ -10,12 +10,12 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0">Datatables</h4>
+                <h4 class="mb-sm-0">Danh sách danh mục</h4>
 
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
-                        <li class="breadcrumb-item active">Datatables</li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Danh sách</a></li>
+                        <li class="breadcrumb-item active">Danh mục</li>
                     </ol>
                 </div>
 
@@ -29,7 +29,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
-                    <h5 class="card-title mb-0">Basic Datatables</h5>
+                    <h5 class="card-title mb-0">Danh sách danh mục</h5>
                     <a href="{{ route('admin.catalogues.create') }}" class="btn btn-success">+ Thêm mới</a>
                 </div>
                 <div class="card-body">
@@ -39,7 +39,6 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
-                                <th>Cover</th>
                                 <th>Is active</th>
                                 <th>Created at</th>
                                 <th>Updated at</th>
@@ -52,9 +51,6 @@
 
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->name }}</td>
-                                <td>
-                                    <img src="{{ \Storage::url($item->cover) }}" alt="" width="100px">
-                                </td>
                                 <td>{!! $item->is_active
                                     ? '<span class="badge bg-success">Active</span>'
                                     : '<span class="badge bg-danger">Inactive</span>' !!}
@@ -62,7 +58,7 @@
                                 <td>{{ $item->created_at }}</td>
                                 <td>{{ $item->updated_at }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('admin.catalogues.show', $item->id) }}" class="btn btn-sm btn-soft-info fs-15"><i class="ri-eye-line"></i></a>
+                                    
                                     <a href="{{ route('admin.catalogues.edit', $item->id) }}" class="btn btn-sm btn-soft-warning fs-15"><i
                                             class="ri-edit-2-line"></i></a>
                                     <a href="{{ route('admin.catalogues.destroy', $item->id) }}" class="btn btn-sm btn-soft-danger fs-15"

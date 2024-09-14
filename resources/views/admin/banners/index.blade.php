@@ -53,7 +53,6 @@
                                 <td>{{ $item->created_at }}</td>
                                 <td>{{ $item->updated_at }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('admin.banners.show', $item) }}" class="btn btn-sm btn-soft-info fs-15"><i class="ri-eye-line"></i></a>
                                     <a href="{{ route('admin.banners.edit', $item) }}" class="btn btn-sm btn-soft-warning fs-15"><i
                                             class="ri-edit-2-line"></i></a>
                                     <form class="d-inline-block" action="{{ route('admin.banners.destroy', $item) }}" method="post">
