@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductColorController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductSizeController;
+use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UserController;
 
 Route::prefix('admin')
@@ -30,12 +31,9 @@ Route::prefix('admin')
             ->as('catalogues.')
             ->group(function () {
                 Route::get('/',                [CatalogueController::class, 'index'])->name('index');
-                Route::get('create',           [CatalogueController::class, 'create'])->name('create');
                 Route::post('store',           [CatalogueController::class, 'store'])->name('store');
-                Route::get('show/{id}',        [CatalogueController::class, 'show'])->name('show');
-                Route::get('{id}/edit',        [CatalogueController::class, 'edit'])->name('edit');
-                Route::put('{id}/update',      [CatalogueController::class, 'update'])->name('update');
-                Route::get('{id}/destroy',     [CatalogueController::class, 'destroy'])->name('destroy');
+                Route::put('/{id}',      [CatalogueController::class, 'update'])->name('update');
+                Route::delete('/{id}/destroy',     [CatalogueController::class, 'destroy'])->name('destroy');
             });
 
         Route::resource('products', ProductController::class);
@@ -57,7 +55,7 @@ Route::prefix('admin')
             ->group(function () {
                 Route::get('/', [ProductColorController::class, 'index'])->name('index');
                 Route::post('/store', [ProductColorController::class, 'store'])->name('store');
-                Route::put('{id}/', [ProductColorController::class, 'update'])->name('update');
+                Route::put('/{id}', [ProductColorController::class, 'update'])->name('update');
                 Route::delete('{id}/delete', [ProductColorController::class, 'destroy'])->name('destroy');
             });
 
@@ -66,8 +64,17 @@ Route::prefix('admin')
             ->group(function () {
                 Route::get('/', [ProductSizeController::class, 'index'])->name('index');
                 Route::post('/store', [ProductSizeController::class, 'store'])->name('store');
-                Route::put('{id}/', [ProductSizeController::class, 'update'])->name('update');
+                Route::put('/{id}', [ProductSizeController::class, 'update'])->name('update');
                 Route::delete('{id}/delete', [ProductSizeController::class, 'destroy'])->name('destroy');
+            });
+
+            Route::prefix('product/tags')
+            ->as('product.tags.')
+            ->group(function () {
+                Route::get('/', [TagController::class, 'index'])->name('index');
+                Route::post('/store', [TagController::class, 'store'])->name('store');
+                Route::put('/{id}', [TagController::class, 'update'])->name('update');
+                Route::delete('{id}/delete', [TagController::class, 'destroy'])->name('destroy');
             });
     });
 

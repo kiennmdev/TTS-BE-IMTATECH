@@ -31,6 +31,12 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="mb-3">
+                            @session('duplicate')
+                                <button type="button" class="d-none" id="displayerror" data-toast
+                                    data-toast-text="{{ session('duplicate') }}" data-toast-gravity="top"
+                                    data-toast-position="center" data-toast-className="danger" data-toast-duration="3000"
+                                    class="btn btn-light w-xs">Error</button>
+                            @endsession
                             <label class="form-label" for="product-title-input">Product Title</label>
 
                             <input type="text" class="form-control" id="product-title-input" value=""
@@ -83,9 +89,20 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div class="mb-4">
+                            <div class="d-none">
+                                <div class="dropzone">
+                                    <div class="dz-message needsclick">
+                                    </div>
+                                </div>
 
-                            <div class="card">
+                                <ul class="list-unstyled mb-0" id="dropzone-preview">
+                                    <li class="mt-2" id="dropzone-preview-list">
+                                    </li>
+                                </ul>
+                                <!-- end dropzon-preview -->
+                            </div>
+                            <div>
                                 <div class="card-header justify-content-between align-items-center d-flex">
                                     <div>
                                         <h5 class="fs-14 mb-1">Product Gallery</h5>
@@ -129,7 +146,11 @@
                                 <div class="card">
                                     <h5 class="fs-14 mb-3">Chọn thuộc tính sản phẩm</h5>
                                     <div class="">
-                                        <div class="fs-14 mb-1">Màu sắc:</div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="fs-14 mb-1">Màu sắc:</div>
+                                            <a href="{{ route('admin.product.colors.index') }}"
+                                                class="float-end text-decoration-underline">Thêm Màu Mới</a>
+                                        </div>
                                         <div>
                                             <div class="color-container">
                                                 @foreach ($colors as $color)
@@ -137,18 +158,22 @@
                                                         <div class="color-product" data-index="{{ $color->id }}"
                                                             style="background-color: {{ $color->code }};"></div>
                                                         <input type="checkbox" id="color{{ $color->id }}"
-                                                            style="display: none;"
-                                                            value="{{ "$color->id-$color->name" }}">
+                                                            style="display: none;" value="{{ "$color->id-$color->name" }}"
+                                                            class="color-ppt">
                                                     </div>
                                                 @endforeach
 
                                             </div>
-
+                                            <div id="errorPropertyColor" class="text-danger mb-3"></div>
                                         </div>
                                     </div>
 
                                     <div class="">
-                                        <div class="fs-14 mb-1">Kích thước:</div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="fs-14 mb-1">Kích Cỡ:</div>
+                                            <a href="{{ route('admin.product.sizes.index') }}"
+                                                class="float-end text-decoration-underline">Thêm Kích Cỡ Mới</a>
+                                        </div>
                                         <div>
                                             <div class="color-container">
                                                 @foreach ($sizes as $sizeID => $sizeName)
@@ -156,11 +181,13 @@
                                                         <div class="size-product align-middle text-center"
                                                             data-index="{{ $sizeID }}">{{ $sizeName }}</div>
                                                         <input type="checkbox" id="size{{ $sizeID }}"
-                                                            style="display: none;" value="{{ "$sizeID-$sizeName" }}">
+                                                            style="display: none;" value="{{ "$sizeID-$sizeName" }}"
+                                                            class="size-ppt">
                                                     </div>
                                                 @endforeach
 
                                             </div>
+                                            <div id="errorPropertySize" class="text-danger"></div>
 
                                         </div>
                                     </div>
@@ -170,54 +197,10 @@
                                 <div class="">
                                     <button type="button" id="addProperty" class="btn btn-primary d-none mb-2"
                                         onclick="addBoxProperty()">Thêm biến thể</button>
+                                    <div id="error-variant" class="text-danger"></div>
                                     <div id="properties" class="row"></div>
                                 </div>
 
-
-                                {{-- <table class="table table-bordered">
-                                    <tr>
-                                        <th>Size</th>
-                                        <th>Color</th>
-                                        <th>Quantity</th>
-                                        <th>Image</th>
-                                    </tr>
-
-                                    @foreach ($sizes as $sizeID => $sizeName)
-                                        @php
-                                            $check = true;
-                                        @endphp
-
-                                        @foreach ($colors as $colorID => $colorName)
-                                            <tr>
-
-                                                @if ($check)
-                                                    <td class="text-center align-middle fs-4" rowspan="2">
-                                                        {{ $sizeName }}</td>
-                                                @endif
-
-                                                <td class="d-flex justify-content-center align-items-center">
-                                                    <div
-                                                        style="width: 40px; height: 40px; border-radius:50%; background-color: {{ $colorName }}">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <input type="number"
-                                                        name="product_variants[{{ $sizeID . '-' . $colorID }}][quantity]"
-                                                        id="" value="" class="form-control">
-                                                </td>
-                                                <td>
-                                                    <input type="file"
-                                                        name="product_variants[{{ $sizeID . '-' . $colorID }}][image]"
-                                                        id="" class="form-control">
-                                                </td>
-                                            </tr>
-
-                                            @php
-                                                $check = false;
-                                            @endphp
-                                        @endforeach
-                                    @endforeach
-                                </table> --}}
                             </div>
                             <!--end row-->
                         </div>
@@ -298,7 +281,7 @@
                         <h5 class="card-title mb-0">Product Categories</h5>
                     </div>
                     <div class="card-body">
-                        <p class="text-muted mb-2"> <a href="{{ route('admin.catalogues.create') }}"
+                        <p class="text-muted mb-2"> <a href="{{ route('admin.catalogues.index') }}"
                                 class="float-end text-decoration-underline">Add
                                 New</a>Select product category</p>
                         <select class="form-select" id="choices-category-input" name="catalogue_id" data-choices
@@ -412,5 +395,70 @@
 @endsection
 
 @section('scripts')
-    <script src="{{asset('js/product-create.js')}}"></script>
+    <script src="{{ asset('js/product-create.js') }}"></script>
 @endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{{-- <table class="table table-bordered">
+                                    <tr>
+                                        <th>Size</th>
+                                        <th>Color</th>
+                                        <th>Quantity</th>
+                                        <th>Image</th>
+                                    </tr>
+
+                                    @foreach ($sizes as $sizeID => $sizeName)
+                                        @php
+                                            $check = true;
+                                        @endphp
+
+                                        @foreach ($colors as $colorID => $colorName)
+                                            <tr>
+
+                                                @if ($check)
+                                                    <td class="text-center align-middle fs-4" rowspan="2">
+                                                        {{ $sizeName }}</td>
+                                                @endif
+
+                                                <td class="d-flex justify-content-center align-items-center">
+                                                    <div
+                                                        style="width: 40px; height: 40px; border-radius:50%; background-color: {{ $colorName }}">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input type="number"
+                                                        name="product_variants[{{ $sizeID . '-' . $colorID }}][quantity]"
+                                                        id="" value="" class="form-control">
+                                                </td>
+                                                <td>
+                                                    <input type="file"
+                                                        name="product_variants[{{ $sizeID . '-' . $colorID }}][image]"
+                                                        id="" class="form-control">
+                                                </td>
+                                            </tr>
+
+                                            @php
+                                                $check = false;
+                                            @endphp
+                                        @endforeach
+                                    @endforeach
+                                </table> --}}

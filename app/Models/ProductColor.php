@@ -13,4 +13,8 @@ class ProductColor extends Model
         'name',
         'code'
     ];
+
+    public function lmao() {
+        return $this->hasMany(ProductVariant::class, 'product_color_id', 'id');
+    }
 }

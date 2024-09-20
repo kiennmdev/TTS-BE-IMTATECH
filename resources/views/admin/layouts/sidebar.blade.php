@@ -60,55 +60,44 @@
             <div id="two-column-menu">
             </div>
             <ul class="navbar-nav" id="navbar-nav">
-                <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+                <li class="menu-title"><span data-key="t-menu">Mục lục</span></li>
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="{{route('admin.dashboard')}}">
-                        <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Dashboards</span>
+                        <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Tổng Quan</span>
                     </a>
                 </li> <!-- end Dashboard Menu -->
                
 
                 <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarCatalogues" data-bs-toggle="collapse"
-                        role="button" aria-expanded="false" aria-controls="sidebarCatalogues">
-                        <i class="ri-layout-3-line"></i> <span data-key="t-layouts">Danh mục sản phẩm</span>
+                    <a class="nav-link menu-link" href="{{route('admin.catalogues.index')}}">
+                        <i class="ri-layout-3-line"></i> <span data-key="t-layouts">Danh Mục</span>
                     </a>
-                    <div class="collapse menu-dropdown" id="sidebarCatalogues">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a href="{{route('admin.catalogues.index')}}" target="_blank" class="nav-link"
-                                    data-key="t-horizontal">Danh sách</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{route('admin.catalogues.create')}}" target="_blank" class="nav-link"
-                                    data-key="t-detached">Thêm mới</a>
-                            </li>
-                           
-                        </ul>
-                    </div>
                 </li> <!-- end Dashboard Menu -->
 
 
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarProducts" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="sidebarProducts">
-                        <i class="ri-product-hunt-line"></i> <span data-key="t-layouts">Sản phẩm</span>
+                        <i class="ri-product-hunt-line"></i> <span data-key="t-layouts">Sản Phẩm</span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarProducts">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{route('admin.products.index')}}" target="_blank" class="nav-link"
-                                    data-key="t-horizontal">Danh sách sản phẩm</a>
+                                    data-key="t-horizontal">Danh Sách Sản Phẩm</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{route('admin.product.colors.index')}}" target="_blank" class="nav-link"
-                                    data-key="t-detached">Danh sách màu</a>
+                                    data-key="t-detached">Danh Sách Màu</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{route('admin.product.sizes.index')}}" target="_blank" class="nav-link"
-                                    data-key="t-detached">Danh sách kích cỡ</a>
+                                    data-key="t-detached">Danh Sách Kích Cỡ</a>
                             </li>
-                           
+                            <li class="nav-item">
+                                <a href="{{route('admin.product.tags.index')}}" target="_blank" class="nav-link"
+                                    data-key="t-detached">Danh Sách Nhãn</a>
+                            </li>                                                 
                         </ul>
                     </div>
                 </li> <!-- end Dashboard Menu -->
@@ -122,11 +111,11 @@
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{route('admin.banners.index')}}" target="_blank" class="nav-link"
-                                    data-key="t-horizontal">Danh sách</a>
+                                    data-key="t-horizontal">Danh Sách</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{route('admin.banners.create')}}" target="_blank" class="nav-link"
-                                    data-key="t-detached">Thêm mới</a>
+                                    data-key="t-detached">Thêm Mới</a>
                             </li>
                            
                         </ul>
@@ -136,17 +125,17 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="#sidebarUsers" data-bs-toggle="collapse"
                         role="button" aria-expanded="false" aria-controls="sidebarUsers">
-                        <i class="ri-account-circle-line"></i> <span data-key="t-layouts">Người dùng</span>
+                        <i class="ri-account-circle-line"></i> <span data-key="t-layouts">Người Dùng</span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarUsers">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{route('admin.users.index')}}" target="_blank" class="nav-link"
-                                    data-key="t-horizontal">Danh sách</a>
+                                    data-key="t-horizontal">Danh Sách</a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{route('admin.users.create')}}" target="_blank" class="nav-link"
-                                    data-key="t-detached">Thêm mới</a>
+                                    data-key="t-detached">Thêm Mới</a>
                             </li>
                            
                         </ul>
@@ -155,21 +144,21 @@
                 
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="{{route('admin.order.index')}}">
-                        <i class="ri-shopping-cart-2-line"></i> <span data-key="t-layouts">Đơn hàng</span>
+                        <i class="ri-shopping-cart-2-line"></i> <span data-key="t-layouts">Đơn Hàng</span>
                     </a>
 
                 </li> <!-- end Dashboard Menu -->
                 
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="{{route('admin.coupon.index')}}">
-                        <i class="ri-coupon-2-line"></i> <span data-key="t-layouts">Mã giảm giá</span>
+                        <i class="ri-coupon-2-line"></i> <span data-key="t-layouts">Mã Giảm Giá</span>
                     </a>
 
                 </li> <!-- end Dashboard Menu -->
 
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="{{route('admin.comments.index')}}">
-                        <i class="bx bx-comment-detail"></i> <span data-key="t-layouts">Bình luận</span>
+                        <i class="bx bx-comment-detail"></i> <span data-key="t-layouts">Bình Luận</span>
                     </a>
                 </li> <!-- end Dashboard Menu -->
             

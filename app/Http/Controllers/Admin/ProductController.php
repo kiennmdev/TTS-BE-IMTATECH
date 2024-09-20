@@ -21,9 +21,7 @@ class ProductController extends Controller
 {
 
     const PATH_VIEW = 'admin.products.';
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $data = Product::query()->with(['catalogue', 'tags'])->latest('id')->get();
@@ -31,9 +29,7 @@ class ProductController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('data'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         $catalogues = Catalogue::query()->pluck('name', 'id')->all();
@@ -44,9 +40,7 @@ class ProductController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('catalogues', 'colors', 'sizes', 'tags'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         // dd($request->all());
@@ -59,21 +53,10 @@ class ProductController extends Controller
             $dataProduct['img_thumbnail'] = Storage::put('products', $dataProduct['img_thumbnail']);
         }
 
-        $dataProductVariants = [];
-        $dataColors = $request->colors;
-        $dataSizes = $request->sizes;
-        foreach ($dataColors as $color) {
-            foreach ($dataSizes as $size) {
-                $dataProductVariants[] = [
-                    "product_color_id" => $color,
-                    "product_size_id" => $size
-                ];
-            }
-        }
-
-        // dd($dataProductVariants);
+        $dataProductVariants = $request->product_variant;
 
         $dataProductTags = $request->tags;
+
         $dataProductGalleries = $request->product_galleries ?: [];
 
         //Sử dụng try-catch để dùng cho sql transaction
@@ -85,6 +68,9 @@ class ProductController extends Controller
 
             foreach ($dataProductVariants as $dataProductVariant) {
                 $dataProductVariant['product_id'] = $product->id;
+                if (isset($dataProductVariant['image'])) {
+                    $dataProductVariant['image'] = Storage::put('products', $dataProductVariant['image']);
+                }
 
                 ProductVariant::query()->create($dataProductVariant);
             }
@@ -110,35 +96,33 @@ class ProductController extends Controller
                 Storage::delete($dataProduct['img_thumbnail']);
             }
 
+            if (Str::contains($exception->getMessage(), "SQLSTATE[23000]")) {
+                return back()->with("duplicate", "Không được thêm hai biến thể sản phẩm giống nhau");
+            }
+
             dd($exception->getMessage());
 
             return back();
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product) {}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(Product $product)
     {
         // dd($product->toArray());
         $productEdit = Product::with(['catalogue', 'tags', 'galleries', 'variants'])->find($product->id);
-        // dd($productEdit->galleries);
+        $variants = ProductVariant::with(['products', 'color', 'size'])->find(1);
+
+        dd($variants->toArray());
         $catalogues = Catalogue::query()->pluck('name', 'id')->all();
-        $colors = ProductColor::query()->pluck('code', 'id')->all();
+        $colors = ProductColor::query()->get(['id', 'name', 'code']);
         $sizes = ProductSize::query()->pluck('name', 'id')->all();
         $tags = Tag::query()->pluck('name', 'id')->all();
         return view(self::PATH_VIEW . __FUNCTION__, compact('productEdit', 'catalogues', 'colors', 'sizes', 'tags'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, Product $product)
     {
         // dd($request->all());
@@ -168,14 +152,8 @@ class ProductController extends Controller
             ];
         }
 
-        // dd($dataProductGalleries);
-        // dd($dataProductTags);
-        // dd($dataProductVariants);
-
         try {
             DB::beginTransaction();
-
-            $now = Carbon::now();
 
             /** @var Product $product */
 
@@ -225,12 +203,9 @@ class ProductController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Product $product)
     {
-        // dd($product->galleries());
 
         try {
             DB::transaction(function () use ($product) {
@@ -239,8 +214,10 @@ class ProductController extends Controller
                 $product->variants()->delete();
                 $product->delete();
             }, 3);
-        } catch (\Exception $exception) {
+
             return back();
+        } catch (\Exception $exception) {
+            return $exception->getMessage();
         }
     }
 }

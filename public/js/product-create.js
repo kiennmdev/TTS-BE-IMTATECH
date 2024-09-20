@@ -1,4 +1,4 @@
-
+//Product gallery crud
 CKEDITOR.replace('content');
 
 let id = 'gen' + '_' + Math.random().toString(36).substring(2, 15).toLowerCase();
@@ -8,17 +8,17 @@ let addGalleryBtn = document.getElementById('addGallery')
 addGalleryBtn.addEventListener('click', (e) => {
 
     let addGalleryElement = `<div id="box_${id}" class="col-xxl-6 col-md-6">
-        
-        <div>
-            <label for="gallery_${id}" class="form-label">Image gallery</label>
-            <div class="d-flex">
-                <input type="file" class="form-control" id="gallery_${id}"
-                name="product_galleries[]">
-                <button type="button" class="btn btn-danger" onclick="removeGalleryImg('box_${id}')"><span class="bx bx-trash"></span></button>
-            </div>
-        </div>
 
-    </div>`;
+<div>
+    <label for="gallery_${id}" class="form-label">Image gallery</label>
+    <div class="d-flex">
+        <input type="file" class="form-control" id="gallery_${id}"
+        name="product_galleries[]">
+        <button type="button" class="btn btn-danger" onclick="removeGalleryImg('box_${id}')"><span class="bx bx-trash"></span></button>
+    </div>
+</div>
+
+</div>`;
 
     let boxGalleryImg = document.getElementById('boxGalleryImg')
 
@@ -32,15 +32,22 @@ function removeGalleryImg(param) {
 }
 
 
-let property = {
-    color: [],
-    size: []
-};
+//Product variant crud
+let colors = [];
 
-let optionColor = '';
+let sizes = [];
 
-let optionSize = '';
+let properties = document.getElementById('properties');
 
+let btnAddProperty = document.querySelector('#addProperty');
+
+let errorVariant = document.querySelector('#error-variant');
+
+let errorPropertyColor = document.querySelector('#errorPropertyColor')
+
+let errorPropertySize = document.querySelector('#errorPropertySize')
+
+//Lưu trữ số màu đã chọn
 document.querySelectorAll('.color-product').forEach(function (colorElement) {
 
     colorElement.addEventListener('click', function () {
@@ -53,15 +60,13 @@ document.querySelectorAll('.color-product').forEach(function (colorElement) {
 
         if (checkbox.checked) {
             parentElement.classList.add('selected-color')
-            property.color.push(checkbox.value);
         } else {
             parentElement.classList.remove('selected-color')
-            let indexToRemove = property.color.indexOf(checkbox.value);
-            property.color.splice(indexToRemove, 1);
         }
     });
 });
 
+//Lưu trữ số kích thước đã chọn
 document.querySelectorAll('.size-product').forEach(function (sizeElement) {
     sizeElement.addEventListener('click', function () {
         const index = sizeElement.getAttribute('data-index');
@@ -73,106 +78,141 @@ document.querySelectorAll('.size-product').forEach(function (sizeElement) {
 
         if (checkbox.checked) {
             parentElement.classList.add('selected-size')
-            property.size.push(checkbox.value);
         } else {
             parentElement.classList.remove('selected-size')
-            let indexToRemove = property.size.indexOf(checkbox.value);
-            property.size.splice(indexToRemove, 1);
         }
     });
 });
 
+//Hiển thị tổng số biến thể
 document.querySelector('#save-property').addEventListener('click', function () {
 
-    let btnAddProperty = document.querySelector('#addProperty');
+    let colorsBox = document.querySelectorAll(".color-ppt")
+    let sizesBox = document.querySelectorAll(".size-ppt")
+    sizes = [];
+    colors = [];
 
-    if (btnAddProperty.classList.contains('d-none')) {
-        btnAddProperty.classList.remove('d-none');
-        btnAddProperty.classList.add('d-block');
-    }
-
-    let colors = property.color.reduce(function (accumulator, element) {
-        if (accumulator.indexOf(element) === -1) {
-            accumulator.push(element)
+    sizesBox.forEach(function (element) {
+        if (element.checked) {
+            sizes.push(element.value)
         }
-        return accumulator
-    }, [])
+    })
 
-    let sizes = property.size.reduce(function (accumulator, element) {
-        if (accumulator.indexOf(element) === -1) {
-            accumulator.push(element)
+    colorsBox.forEach(function (element) {
+        if (element.checked) {
+            colors.push(element.value)
         }
-        return accumulator
-    }, [])
+    })
 
+    if (colors.length == 0) {
+        errorPropertyColor.innerHTML = "Bạn chưa chọn màu sản phẩm";
+        if (btnAddProperty.classList.contains('d-block')) {
+            btnAddProperty.classList.remove('d-block');
+            btnAddProperty.classList.add('d-none');
+        }
+        properties.innerHTML = "";
+        errorVariant.innerHTML = "";
 
-    for (const color of colors) {
-        let colorAndName = color.split("-");
-        optionColor += `<option value="${colorAndName[0]}">${colorAndName[1]}</option>`;
+    } else {
+        errorPropertyColor.innerHTML = "";
+    }
+    if (sizes.length == 0) {
+        errorPropertySize.innerHTML = "Bạn chưa chọn kích cỡ sản phẩm";
+        if (btnAddProperty.classList.contains('d-block')) {
+            btnAddProperty.classList.remove('d-block');
+            btnAddProperty.classList.add('d-none');
+        }
+        properties.innerHTML = "";
+        errorVariant.innerHTML = "";
+
+    } else {
+        errorPropertySize.innerHTML = '';
     }
 
-    for (const size of sizes) {
-        let sizeAndName = size.split("-");
-        optionSize += `<option value="${sizeAndName[0]}">${sizeAndName[1]}</option>`;
-    }
+    if (colors.length > 0 && sizes.length > 0) {
 
-    let properties = document.getElementById('properties');
+        errorPropertyColor.innerHTML = "";
 
-    let propertyBox = `<div class="col-12 mb-2" id="box-property-${id}">
-                                    <div class="row justify-content-between">
-                                        <div class="d-flex col">
-                                            <select class="form-select" aria-label="Default select example">
-                                                <option selected>Chọn thuộc tính</option>
-                                                ${optionColor}
-                                            </select>
-                                            <select class="form-select" aria-label="Default select example">
-                                                <option selected>Chọn thuộc tính</option>
-                                                ${optionSize}
-                                            </select>
-                                        </div>
-                                        <a class="col d-flex justify-content-end align-items-center"
-                                            style="width:100%" data-bs-toggle="collapse"
-                                            href="#multiCollapseExample1" role="button" aria-expanded="false"
-                                            aria-controls="multiCollapseExample1"><i
-                                                class="bx bx-chevron-down"></i></a>
-                                        <div class="col-1">
-                                            <button type="button" class="btn btn-danger" onclick="deleteBoxProperty('box-property-${id}')"><span class="bx bx-trash"></span></button>
-                                        </div>
-                                    </div>
-                                    <div class="collapse multi-collapse" id="multiCollapseExample1">
-                                        <div class="card card-body mb-0">
-                                            <div class="row">
-                                        <div class="col">
-                                            <label class="form-label" for="product-title-input">Price Regular</label>
-                                            <input type="number" class="form-control" id="product-title-input"
-                                                value="" placeholder="Enter product price regular" name="price_regular"
-                                                required>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label" for="product-title-input">Price Sale</label>
-                                            <input type="number" class="form-control" id="product-title-input"
-                                                value="" placeholder="Enter product price sale" name="price_sale"
-                                                required>
-                                        </div>
-                                    </div>
+        errorPropertySize.innerHTML = "";
+
+        errorVariant.innerHTML = "";
+
+        let optionColor = '';
+
+        let optionSize = '';
+
+        if (btnAddProperty.classList.contains('d-none')) {
+            btnAddProperty.classList.remove('d-none');
+            btnAddProperty.classList.add('d-block');
+        }
+
+        for (const color of colors) {
+            let colorAndName = color.split("-");
+            optionColor += `<option value="${colorAndName[0]}">${colorAndName[1]}</option>`;
+        }
+
+        for (const size of sizes) {
+            let sizeAndName = size.split("-");
+            optionSize += `<option value="${sizeAndName[0]}">${sizeAndName[1]}</option>`;
+        }
+
+        let propertyBox = `<div class="col-12 mb-2 box-properties" id="box-property-${id}">
+                            <div class="row justify-content-between">
+                                <div class="d-flex col">
+                                    <select class="form-select selectBoxColor" aria-label="Default select example" name="product_variant[${id}][product_color_id]">
+                                        <option value="" selected>Chọn màu sắc</option>
+                                        ${optionColor}
+                                    </select>
+                                    <select class="form-select selectBoxSize" aria-label="Default select example" name="product_variant[${id}][product_size_id]">
+                                        <option value="" selected>Chọn kích cỡ</option>
+                                        ${optionSize}
+                                    </select>
+                                </div>
+                                <a class="col d-flex justify-content-end align-items-center"
+                                    style="width:100%" data-bs-toggle="collapse"
+                                    href="#multiCollapseExample1" role="button" aria-expanded="false"
+                                    aria-controls="multiCollapseExample1"><i
+                                        class="bx bx-chevron-down"></i></a>
+                                <div class="col-1">
+                                    <button type="button" class="btn btn-danger" onclick="deleteBoxProperty('box-property-${id}')"><span class="bx bx-trash"></span></button>
+                                </div>
+                            </div>
+                            <div class="collapse multi-collapse" id="multiCollapseExample1">
+                                <div class="card card-body mb-0">
                                     <div class="row">
-                                        <div class="col">
-                                            <label class="form-label" for="product-title-input">Quantity</label>
-                                            <input type="number" class="form-control" id="product-title-input"
-                                                value="" placeholder="Enter product quantity" name="quantity"
-                                                required>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label" for="product-title-input">Image</label>
-                                            <input type="file" class="form-control" id="product-title-input" name="image"
-                                                required>
-                                        </div>
-                                    </div>
-                                        </div>
-                                    </div>
-                                </div>`;
+                                <div class="col">
+                                    <label class="form-label" for="product-title-input">Price Regular</label>
+                                    <input type="number" class="form-control" id="product-title-input"
+                                        value="" placeholder="Enter product price regular" name="product_variant[${id}][price_regular]"
+                                        required>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label" for="product-title-input">Price Sale</label>
+                                    <input type="number" class="form-control" id="product-title-input"
+                                        value="" placeholder="Enter product price sale" name="product_variant[${id}][price_sale]"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label class="form-label" for="product-title-input">Quantity</label>
+                                    <input type="number" class="form-control" id="product-title-input"
+                                        value="" placeholder="Enter product quantity" name="product_variant[${id}][quantity]"
+                                        required>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label" for="product-title-input">Image</label>
+                                    <input type="file" class="form-control" id="product-title-input" name="product_variant[${id}][image]"
+                                        required>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>`;
 
-    properties.innerHTML = propertyBox;
+        properties.innerHTML = propertyBox;
+
+    }
 
 })
 
@@ -184,67 +224,95 @@ function deleteBoxProperty(param) {
 
 function addBoxProperty() {
 
-    let totalProperty = property.color.length * property.size.length;
+    let optionColor = '';
 
-    alert(totalProperty);
+    let optionSize = '';
 
+    let propertyBoxes = document.querySelectorAll('.box-properties').length;
 
-    let idSelect = 'gen' + '_' + Math.random().toString(36).substring(2, 15).toLowerCase();
+    let totalCoupleProperty = colors.length * sizes.length;
 
-    // let properties = document.getElementById('properties');
+    // alert(totalCoupleProperty);
+    // console.log(propertyBoxes);
 
-    let propertyBox = `<div class="col-12 mb-2" id="box-property-${idSelect}">
-                                    <div class="row justify-content-between">
-                                        <div class="d-flex col">
-                                            <select class="form-select" aria-label="Default select example">
-                                                <option selected>Chọn thuộc tính</option>
-                                                ${optionColor}
-                                            </select>
-                                            <select class="form-select" aria-label="Default select example">
-                                                <option selected>Chọn thuộc tính</option>
-                                                ${optionSize}
-                                            </select>
-                                        </div>
-                                        <a class="col d-flex justify-content-end align-items-center"
-                                            style="width:100%" data-bs-toggle="collapse"
-                                            href="#multiCollapseExample${idSelect}" role="button" aria-expanded="false"
-                                            aria-controls="multiCollapseExample${idSelect}"><i
-                                                class="bx bx-chevron-down"></i></a>
-                                        <div class="col-1">
-                                            <button type="button" class="btn btn-danger" onclick="deleteBoxProperty('box-property-${idSelect}')"><span class="bx bx-trash"></span></button>
-                                        </div>
-                                    </div>
-                                    <div class="collapse multi-collapse" id="multiCollapseExample${idSelect}">
-                                        <div class="card card-body mb-0">
-                                            <div class="row">
-                                        <div class="col">
-                                            <label class="form-label" for="product-title-input">Price Regular</label>
-                                            <input type="number" class="form-control" id="product-title-input"
-                                                value="" placeholder="Enter product price regular" name="price_regular"
-                                                required>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label" for="product-title-input">Price Sale</label>
-                                            <input type="number" class="form-control" id="product-title-input"
-                                                value="" placeholder="Enter product price sale" name="price_sale"
-                                                required>
-                                        </div>
-                                    </div>
+    if (totalCoupleProperty <= propertyBoxes) {
+        errorVariant.innerHTML = "Vượt quá số lượng biến thể đã chọn";
+    } else {
+
+        errorVariant.innerHTML = '';
+
+        let idSelect = 'gen' + '_' + Math.random().toString(36).substring(2, 15).toLowerCase();
+
+        for (const color of colors) {
+            let colorAndName = color.split("-");
+            optionColor += `<option value="${colorAndName[0]}">${colorAndName[1]}</option>`;
+        }
+
+        for (const size of sizes) {
+            let sizeAndName = size.split("-");
+            optionSize += `<option value="${sizeAndName[0]}">${sizeAndName[1]}</option>`;
+        }
+
+        let propertyBox = `<div class="col-12 mb-2 box-properties" id="box-property-${idSelect}">
+                            <div class="row justify-content-between">
+                                <div class="d-flex col">
+                                    <select class="form-select selectBoxColor" aria-label="Default select example" name="product_variant[${idSelect}][product_color_id]">
+                                        <option value="" selected>Chọn màu sắc</option>
+                                        ${optionColor}
+                                    </select>
+                                    <select class="form-select selectBoxSize" aria-label="Default select example" name="product_variant[${idSelect}][product_size_id]">
+                                        <option value="" selected>Chọn kích cỡ</option>
+                                        ${optionSize}
+                                    </select>
+                                </div>
+                                <a class="col d-flex justify-content-end align-items-center"
+                                    style="width:100%" data-bs-toggle="collapse"
+                                    href="#multiCollapseExample${idSelect}" role="button" aria-expanded="false"
+                                    aria-controls="multiCollapseExample${idSelect}"><i
+                                        class="bx bx-chevron-down"></i></a>
+                                <div class="col-1">
+                                    <button type="button" class="btn btn-danger" onclick="deleteBoxProperty('box-property-${idSelect}')"><span class="bx bx-trash"></span></button>
+                                </div>
+                            </div>
+                            <div class="collapse multi-collapse" id="multiCollapseExample${idSelect}">
+                                <div class="card card-body mb-0">
                                     <div class="row">
-                                        <div class="col">
-                                            <label class="form-label" for="product-title-input">Quantity</label>
-                                            <input type="number" class="form-control" id="product-title-input"
-                                                value="" placeholder="Enter product quantity" name="quantity"
-                                                required>
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label" for="product-title-input">Image</label>
-                                            <input type="file" class="form-control" id="product-title-input" name="image"
-                                                required>
-                                        </div>
-                                    </div>
-                                        </div>
-                                    </div>
-                                </div>`;
-    $(properties).append(propertyBox);
+                                <div class="col">
+                                    <label class="form-label" for="product-title-input">Price Regular</label>
+                                    <input type="number" class="form-control" id="product-title-input"
+                                        value="" placeholder="Enter product price regular" name="product_variant[${idSelect}][price_regular]"
+                                        required>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label" for="product-title-input">Price Sale</label>
+                                    <input type="number" class="form-control" id="product-title-input"
+                                        value="" placeholder="Enter product price sale" name="product_variant[${idSelect}][price_sale]"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label class="form-label" for="product-title-input">Quantity</label>
+                                    <input type="number" class="form-control" id="product-title-input"
+                                        value="" placeholder="Enter product quantity" name="product_variant[${idSelect}][quantity]"
+                                        required>
+                                </div>
+                                <div class="col">
+                                    <label class="form-label" for="product-title-input">Image</label>
+                                    <input type="file" class="form-control" id="product-title-input" name="product_variant[${idSelect}][image]"
+                                        required>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>`;
+        $(properties).append(propertyBox);
+    }
+
 }
+
+let btnError = document.querySelector('#displayerror');
+btnError.click();
+
+
+    

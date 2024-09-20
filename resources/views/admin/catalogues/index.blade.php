@@ -30,7 +30,8 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">
                     <h5 class="card-title mb-0">Danh sách danh mục</h5>
-                    <a href="{{ route('admin.catalogues.create') }}" class="btn btn-success">+ Thêm mới</a>
+                    <button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn"
+                        data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Thêm Mới</button>
                 </div>
                 <div class="card-body">
                     <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle"
@@ -58,17 +59,144 @@
                                 <td>{{ $item->created_at }}</td>
                                 <td>{{ $item->updated_at }}</td>
                                 <td class="text-center">
-                                    
-                                    <a href="{{ route('admin.catalogues.edit', $item->id) }}" class="btn btn-sm btn-soft-warning fs-15"><i
-                                            class="ri-edit-2-line"></i></a>
-                                    <a href="{{ route('admin.catalogues.destroy', $item->id) }}" class="btn btn-sm btn-soft-danger fs-15"
-                                        onclick="return confirm('Muốn xóa không?')"><i class="ri-delete-bin-line"></i></a>
+
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <div class="edit">
+                                            <button class="btn btn-sm btn-soft-warning edit-item-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#showModal{{ $item->id }}"><i
+                                                    class="ri-edit-2-line"></i></button>
+                                        </div>
+
+                                        <div class="remove">
+                                            <button class="btn btn-sm btn-soft-danger remove-item-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteRecordModal{{ $item->id }}"><i
+                                                    class="ri-delete-bin-2-line"></i></button>
+                                        </div>
+
+                                    </div>
                                 </td>
                             </tr>
+
+                            <div class="modal fade" id="showModal{{ $item->id }}" tabindex="-1"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-light p-3">
+                                            <h5 class="modal-title">Chi tiết</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close" id="close-modal"></button>
+                                        </div>
+                                        <form class="tablelist-form" autocomplete="off"
+                                            action="{{ route('admin.catalogues.update', $item) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="name" class="form-label">Tên Danh Mục:</label>
+                                                    <input type="text" class="form-control" id="name" placeholder="Nhập tên danh mục"
+                                                        name="name" value="{{$item->name}}">
+                                                </div>
+                                                <div class="mb-3 ms-1 form-check">
+                                                    <input type="checkbox" class="form-check-input" id="edittype" value="1"
+                                                        name="is_active" @if ($item->is_active) checked @endif>
+                                                    <label class="form-check-label" for="edittype">Is active</label>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <div class="hstack gap-2 justify-content-end">
+                                                    <button type="button" class="btn btn-light"
+                                                        data-bs-dismiss="modal">Đóng</button>
+                                                    <button type="submit" class="btn btn-success"
+                                                        id="add-btn">Cập Nhật</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Modal -->
+                            <div class="modal fade zoomIn" id="deleteRecordModal{{ $item->id }}"
+                                tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="btn-close"
+                                                data-bs-dismiss="modal" aria-label="Close"
+                                                id="btn-close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mt-2 text-center">
+                                                <lord-icon src="https://cdn.lordicon.com/gsqxdxog.json"
+                                                    trigger="loop"
+                                                    colors="primary:#f7b84b,secondary:#f06548"
+                                                    style="width:100px;height:100px"></lord-icon>
+                                                <div class="mt-4 pt-2 fs-15 mx-4 mx-sm-5">
+                                                    <h4>Bạn chắc chắn ?</h4>
+                                                    <p class="text-muted mx-4 mb-0">Bạn có chắc muốn xóa nhãn
+                                                        này ?</p>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex gap-2 justify-content-center mt-4 mb-2">
+                                                <form action="{{ route('admin.catalogues.destroy', $item) }}"
+                                                    method="post">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" type="button"
+                                                        class="btn w-sm btn-light"
+                                                        data-bs-dismiss="modal">Đóng</button>
+                                                    <button type="submit" class="btn w-sm btn-danger "
+                                                        id="delete-record">Chắc chắn!</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--end modal -->
+
                         @endforeach
                     </table>
                 </div>
             </div>
+
+            <div class="modal fade" id="showModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-light p-3">
+                                            <h5 class="modal-title" id="exampleModalLabel">Thêm Danh Mục</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close" id="close-modal"></button>
+                                        </div>
+                                        <form class="tablelist-form" autocomplete="off"
+                                            action="{{ route('admin.catalogues.store') }}" method="POST">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="name" class="form-label">Tên Danh Mục:</label>
+                                                    <input type="text" class="form-control" id="name" placeholder="Enter name"
+                                                        name="name">
+                                                </div>
+                                                <div class="mb-3 ms-1 form-check">
+                                                    <input type="checkbox" class="form-check-input" id="addtype" value="1"
+                                                        name="is_active" checked>
+                                                    <label class="form-check-label" for="addtype">Is active</label>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <div class="hstack gap-2 justify-content-end">
+                                                    <button type="button" class="btn btn-light"
+                                                        data-bs-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-success" id="add-btn">Thêm Nhãn</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
         </div><!--end col-->
     </div><!--end row-->
 @endsection
