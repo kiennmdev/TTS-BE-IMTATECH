@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductColorController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductSizeController;
+use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UserController;
 
@@ -37,6 +38,10 @@ Route::prefix('admin')
             });
 
         Route::resource('products', ProductController::class);
+        Route::put('product/variants', [ProductVariantController::class, 'updateMulti'])->name('product.variants.updateMulti');
+        Route::get('product/variants', [ProductVariantController::class, 'index'])->name('product.variants.index');
+        Route::put('product/{id}/variant', [ProductVariantController::class, 'update'])->name('product.variant.update');
+        Route::delete('product/{id}/variant', [ProductVariantController::class, 'destroy'])->name('product.variant.destroy');
 
         Route::resource('users', UserController::class);
 

@@ -159,11 +159,11 @@ document.querySelector('#save-property').addEventListener('click', function () {
         let propertyBox = `<div class="col-12 mb-2 box-properties" id="box-property-${id}">
                             <div class="row justify-content-between">
                                 <div class="d-flex col">
-                                    <select class="form-select selectBoxColor" aria-label="Default select example" name="product_variant[${id}][product_color_id]">
+                                    <select class="form-select selectBoxColor" aria-label="Default select example" name="product_variants[${id}][product_color_id]">
                                         <option value="" selected>Chọn màu sắc</option>
                                         ${optionColor}
                                     </select>
-                                    <select class="form-select selectBoxSize" aria-label="Default select example" name="product_variant[${id}][product_size_id]">
+                                    <select class="form-select selectBoxSize" aria-label="Default select example" name="product_variants[${id}][product_size_id]">
                                         <option value="" selected>Chọn kích cỡ</option>
                                         ${optionSize}
                                     </select>
@@ -183,13 +183,13 @@ document.querySelector('#save-property').addEventListener('click', function () {
                                 <div class="col">
                                     <label class="form-label" for="product-title-input">Price Regular</label>
                                     <input type="number" class="form-control" id="product-title-input"
-                                        value="" placeholder="Enter product price regular" name="product_variant[${id}][price_regular]"
+                                        value="" placeholder="Enter product price regular" name="product_variants[${id}][price_regular]"
                                         required>
                                 </div>
                                 <div class="col">
                                     <label class="form-label" for="product-title-input">Price Sale</label>
                                     <input type="number" class="form-control" id="product-title-input"
-                                        value="" placeholder="Enter product price sale" name="product_variant[${id}][price_sale]"
+                                        value="" placeholder="Enter product price sale" name="product_variants[${id}][price_sale]"
                                         required>
                                 </div>
                             </div>
@@ -197,12 +197,12 @@ document.querySelector('#save-property').addEventListener('click', function () {
                                 <div class="col">
                                     <label class="form-label" for="product-title-input">Quantity</label>
                                     <input type="number" class="form-control" id="product-title-input"
-                                        value="" placeholder="Enter product quantity" name="product_variant[${id}][quantity]"
+                                        value="" placeholder="Enter product quantity" name="product_variants[${id}][quantity]"
                                         required>
                                 </div>
                                 <div class="col">
                                     <label class="form-label" for="product-title-input">Image</label>
-                                    <input type="file" class="form-control" id="product-title-input" name="product_variant[${id}][image]"
+                                    <input type="file" class="form-control" id="product-title-input" name="product_variants[${id}][image]"
                                         required>
                                 </div>
                             </div>
@@ -256,11 +256,11 @@ function addBoxProperty() {
         let propertyBox = `<div class="col-12 mb-2 box-properties" id="box-property-${idSelect}">
                             <div class="row justify-content-between">
                                 <div class="d-flex col">
-                                    <select class="form-select selectBoxColor" aria-label="Default select example" name="product_variant[${idSelect}][product_color_id]">
+                                    <select class="form-select selectBoxColor" aria-label="Default select example" name="product_variants[${idSelect}][product_color_id]">
                                         <option value="" selected>Chọn màu sắc</option>
                                         ${optionColor}
                                     </select>
-                                    <select class="form-select selectBoxSize" aria-label="Default select example" name="product_variant[${idSelect}][product_size_id]">
+                                    <select class="form-select selectBoxSize" aria-label="Default select example" name="product_variants[${idSelect}][product_size_id]">
                                         <option value="" selected>Chọn kích cỡ</option>
                                         ${optionSize}
                                     </select>
@@ -280,13 +280,13 @@ function addBoxProperty() {
                                 <div class="col">
                                     <label class="form-label" for="product-title-input">Price Regular</label>
                                     <input type="number" class="form-control" id="product-title-input"
-                                        value="" placeholder="Enter product price regular" name="product_variant[${idSelect}][price_regular]"
+                                        value="" placeholder="Enter product price regular" name="product_variants[${idSelect}][price_regular]"
                                         required>
                                 </div>
                                 <div class="col">
                                     <label class="form-label" for="product-title-input">Price Sale</label>
                                     <input type="number" class="form-control" id="product-title-input"
-                                        value="" placeholder="Enter product price sale" name="product_variant[${idSelect}][price_sale]"
+                                        value="" placeholder="Enter product price sale" name="product_variants[${idSelect}][price_sale]"
                                         required>
                                 </div>
                             </div>
@@ -294,12 +294,12 @@ function addBoxProperty() {
                                 <div class="col">
                                     <label class="form-label" for="product-title-input">Quantity</label>
                                     <input type="number" class="form-control" id="product-title-input"
-                                        value="" placeholder="Enter product quantity" name="product_variant[${idSelect}][quantity]"
+                                        value="" placeholder="Enter product quantity" name="product_variants[${idSelect}][quantity]"
                                         required>
                                 </div>
                                 <div class="col">
                                     <label class="form-label" for="product-title-input">Image</label>
-                                    <input type="file" class="form-control" id="product-title-input" name="product_variant[${idSelect}][image]"
+                                    <input type="file" class="form-control" id="product-title-input" name="product_variants[${idSelect}][image]"
                                         required>
                                 </div>
                             </div>
@@ -314,5 +314,18 @@ function addBoxProperty() {
 let btnError = document.querySelector('#displayerror');
 btnError.click();
 
-
-    
+function addImageVariant(id) {
+    let inputImage = document.getElementById(`fileInput${id}`);
+    inputImage.click();
+    inputImage.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imagePreview = document.getElementById(`imagePreview${id}`);
+                imagePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    })
+}

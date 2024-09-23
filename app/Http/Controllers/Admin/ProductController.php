@@ -53,7 +53,7 @@ class ProductController extends Controller
             $dataProduct['img_thumbnail'] = Storage::put('products', $dataProduct['img_thumbnail']);
         }
 
-        $dataProductVariants = $request->product_variant;
+        $dataProductVariants = $request->product_variants;
 
         $dataProductTags = $request->tags;
 
@@ -67,8 +67,11 @@ class ProductController extends Controller
             $product = Product::query()->create($dataProduct);
 
             foreach ($dataProductVariants as $dataProductVariant) {
+
                 $dataProductVariant['product_id'] = $product->id;
+
                 if (isset($dataProductVariant['image'])) {
+
                     $dataProductVariant['image'] = Storage::put('products', $dataProductVariant['image']);
                 }
 
@@ -112,23 +115,31 @@ class ProductController extends Controller
     {
         // dd($product->toArray());
         $productEdit = Product::with(['catalogue', 'tags', 'galleries', 'variants'])->find($product->id);
-        $variants = ProductVariant::with(['products', 'color', 'size'])->find(1);
 
-        dd($variants->toArray());
+        $variants = ProductVariant::with(['color', 'size'])->where('product_id', $product->id)->get();
+
+        // dd($variants->toArray());
         $catalogues = Catalogue::query()->pluck('name', 'id')->all();
+
         $colors = ProductColor::query()->get(['id', 'name', 'code']);
+
         $sizes = ProductSize::query()->pluck('name', 'id')->all();
+
         $tags = Tag::query()->pluck('name', 'id')->all();
-        return view(self::PATH_VIEW . __FUNCTION__, compact('productEdit', 'catalogues', 'colors', 'sizes', 'tags'));
+
+        return view(self::PATH_VIEW . __FUNCTION__, compact('productEdit', 'catalogues', 'colors', 'sizes', 'tags', 'variants'));
     }
 
 
     public function update(Request $request, Product $product)
     {
         // dd($request->all());
+
         $dataProduct = $request->except('product_variants', 'tags', 'product_galleries', '_token', '_method', 'search_terms');
         $dataProduct['id'] = $product->id;
+
         // dd($dataProduct);
+
         if (isset($dataProduct['img_thumbnail'])) {
             $dataProduct['img_thumbnail'] = Storage::put('products', $dataProduct['img_thumbnail']);
         }
@@ -137,20 +148,8 @@ class ProductController extends Controller
 
         $dataProductTags = $request->tags;
 
-        $dataProductVariantTMP = $request->product_variants;
-
-        $dataProductVariants = [];
-
-        foreach ($dataProductVariantTMP as $key => $item) {
-            $tmp = explode('-', $key);
-
-            $dataProductVariants[] = [
-                'product_size_id' => $tmp[0],
-                'product_color_id' => $tmp[1],
-                'quantity' => $item['quantity'],
-                'image' => $item['image'] ?? null
-            ];
-        }
+        $dataProductVariants = $request->product_variants;
+        // dd($dataProductVariants);
 
         try {
             DB::beginTransaction();
@@ -176,15 +175,13 @@ class ProductController extends Controller
                 ProductGallery::query()->where('id', '=', $id)->update(['status' => $value]);
             }
 
-            foreach ($dataProductVariants as $variant) {
-                if ($variant['image'] === null) {
-                    unset($variant['image']);
-                } else {
-                    $variant['image'] = Storage::put('products', $variant['image']);
+            foreach ($dataProductVariants as $dataProductVariant) {
+                $dataProductVariant['product_id'] = $product->id;
+                if (isset($dataProductVariant['image'])) {
+                    $dataProductVariant['image'] = Storage::put('products', $dataProductVariant['image']);
                 }
-                ProductVariant::where('product_size_id', $variant['product_size_id'])
-                    ->where('product_color_id', $variant['product_color_id'])
-                    ->update($variant);
+
+                ProductVariant::query()->create($dataProductVariant);
             }
 
             DB::commit();
@@ -195,6 +192,11 @@ class ProductController extends Controller
 
             if (isset($dataProduct['img_thumbnail'])) {
                 Storage::delete($dataProduct['img_thumbnail']);
+            }
+
+            if (Str::contains($exception->getMessage(), "SQLSTATE[23000]")) {
+                // dd(1);
+                return back()->with("duplicate", "Đã tồn tại hoặc bị trùng sản phẩm biến thể");
             }
 
             dd($exception);

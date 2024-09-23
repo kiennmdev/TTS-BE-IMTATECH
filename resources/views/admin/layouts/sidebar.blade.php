@@ -87,6 +87,10 @@
                                     data-key="t-horizontal">Danh Sách Sản Phẩm</a>
                             </li>
                             <li class="nav-item">
+                                <a href="{{route('admin.product.variants.index')}}" target="_blank" class="nav-link"
+                                    data-key="t-horizontal">Danh Sách Biến Thể</a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="{{route('admin.product.colors.index')}}" target="_blank" class="nav-link"
                                     data-key="t-detached">Danh Sách Màu</a>
                             </li>

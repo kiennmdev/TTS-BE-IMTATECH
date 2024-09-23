@@ -3,63 +3,57 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductVariantController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    const PATH_VIEW = "admin.product-variants.";
+
     public function index()
     {
-        //
+        $productVariants = ProductVariant::with(['product','color','size'])->get();
+        // dd($productVariants->toArray());
+
+        return view(self::PATH_VIEW . __FUNCTION__, compact('productVariants'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateMulti(Request $request)
     {
-        //
+        $data = $request->variant_update;
+
+        try {
+            DB::beginTransaction();
+
+            foreach ($data as $id => $value) {
+                if(isset($value['image'])) {
+                    $value['image'] = Storage::put('products',$value['image']);
+                }
+                ProductVariant::query()->where('id', $id)->update($value);
+            }
+
+            DB::commit();
+
+            return back();
+
+        } catch (\Exception $exception) {
+            dd($exception->getMessage());
+        }
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    public function destroy(string $id) {
+        $productVariant = ProductVariant::query()->where('id', $id)->first();
+        // dd($productVariant);
+        
+        $productVariant->delete();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        if($productVariant->image !== null) {
+            Storage::delete($productVariant->image);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return back();
     }
 }

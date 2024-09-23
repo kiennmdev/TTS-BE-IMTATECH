@@ -37,7 +37,7 @@
                                     data-toast-position="center" data-toast-className="danger" data-toast-duration="3000"
                                     class="btn btn-light w-xs">Error</button>
                             @endsession
-                            <label class="form-label" for="product-title-input">Product Title</label>
+                            <label class="form-label" for="product-title-input">Tiêu Đề Sản Phẩm</label>
 
                             <input type="text" class="form-control" id="product-title-input" value=""
                                 placeholder="Enter product title" name="name" required>
@@ -51,7 +51,7 @@
                         </div>
 
                         <div class="mt-3">
-                            <label>Product Description</label>
+                            <label>Mô Tả Sản Phẩm</label>
                             <textarea class="form-control" id="content" rows="2" name="content"></textarea>
                         </div>
                     </div>
@@ -223,24 +223,24 @@
                             <label for="Hot Deal" class="form-label">Hot Deal</label>
                             <select class="form-select" name="is_hot_deal" id="Hot Deal" data-choices
                                 data-choices-search-false>
-                                <option value="1" selected>Public</option>
-                                <option value="0">Hidden</option>
+                                <option value="1" selected>Yes</option>
+                                <option value="0">No</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="New" class="form-label">New</label>
                             <select class="form-select" name="is_new" id="New" data-choices
                                 data-choices-search-false>
-                                <option value="1" selected>Public</option>
-                                <option value="0">Hidden</option>
+                                <option value="1" selected>Yes</option>
+                                <option value="0">No</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="Show Home" class="form-label">Show Home</label>
                             <select class="form-select" name="is_show_home" id="Show Home" data-choices
                                 data-choices-search-false>
-                                <option value="1" selected>Public</option>
-                                <option value="0">Hidden</option>
+                                <option value="1" selected>Yes</option>
+                                <option value="0">No</option>
                             </select>
                         </div>
 
