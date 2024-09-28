@@ -190,7 +190,7 @@
                                             <img class="secondary-img" src="{{ Storage::url($newProduct->img_thumbnail) }}"
                                                 alt="Kenne's Product Image">
                                         </a>
-                                        <span class="sticker-2">Hot</span>
+                                        <span class="sticker-2">NEW</span>
                                         {{-- <div class="add-actions">
                                             <ul>
                                                 <li class="quick-view-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"><a href="javascript:void(0)" data-bs-toggle="tooltip" data-placement="right" title="Quick View"><i
@@ -211,10 +211,27 @@
                                                     href="{{ route('product.detail', $newProduct->slug) }}">{{ $newProduct->name }}</a>
                                             </h3>
                                             <div class="price-box">
+                                                @php
+                                                        $min_price = $newProduct->variants[0]->min_price_sale;
+                                                        $max_price = $newProduct->variants[0]->max_price_sale;
+                                                        if($newProduct->variants[0]->min_price_sale == 0 && $newProduct->variants[0]->max_price_sale != 0) {
+                                                            $min_price = $newProduct->variants[0]->max_price_sale;
+                                                            $max_price = $newProduct->variants[0]->max_price_regular;
+                                                        } else if($newProduct->variants[0]->min_price_sale != 0 && $newProduct->variants[0]->max_price_sale == 0){
+                                                            $min_price = $newProduct->variants[0]->min_price_sale;
+                                                            $max_price = $newProduct->variants[0]->max_price_regular;
+                                                        } else if($newProduct->variants[0]->min_price_sale == 0 && $newProduct->variants[0]->max_price_sale == 0){
+                                                            $min_price = $newProduct->variants[0]->min_price_regular;
+                                                            $max_price = $newProduct->variants[0]->max_price_regular;
+                                                        }
+                                                    @endphp
                                                 <span
-                                                    class="new-price">{{ number_format($newProduct->price_sale, 0, ',', '.') }}<sup>đ</sup></span>
+                                                    class="new-price">{{ number_format($min_price, 0, ',', '.') }}<sup>đ</sup>
+                                                </span>
+                                                -
                                                 <span
-                                                    class="old-price">{{ number_format($newProduct->price_regular, 0, ',', '.') }}<sup>đ</sup></span>
+                                                    class="new-price">{{ number_format($max_price, 0, ',', '.') }}<sup>đ</sup>
+                                                </span>
                                             </div>
                                             <div class="rating-box">
                                                 <ul>
@@ -317,7 +334,7 @@
                                                         src="{{ Storage::url($product->img_thumbnail) }}"
                                                         alt="Kenne's Product Image">
                                                 </a>
-                                                <span class="sticker">Bestseller</span>
+                                                {{-- <span class="sticker">Bestseller</span> --}}
                                                 {{-- <div class="add-actions">
                                                     <ul>
                                                         <li class="quick-view-btn" data-bs-toggle="modal" data-bs-target="#exampleModalCenter"><a href="javascript:void(0)" data-bs-toggle="tooltip" data-placement="right" title="Quick View"><i class="ion-ios-search"></i></a>
@@ -339,10 +356,25 @@
                                                             href="{{ route('product.detail', $product->slug) }}">{{ $product->name }}</a>
                                                     </h3>
                                                     <div class="price-box">
+                                                        @php
+                                                        $min_price = $product->variants[0]->min_price_sale;
+                                                        $max_price = $product->variants[0]->max_price_sale;
+                                                        if($product->variants[0]->min_price_sale == 0 && $product->variants[0]->max_price_sale != 0) {
+                                                            $min_price = $product->variants[0]->max_price_sale;
+                                                            $max_price = $product->variants[0]->max_price_regular;
+                                                        } else if($product->variants[0]->min_price_sale != 0 && $product->variants[0]->max_price_sale == 0){
+                                                            $min_price = $product->variants[0]->min_price_sale;
+                                                            $max_price = $product->variants[0]->max_price_regular;
+                                                        } else if($product->variants[0]->min_price_sale == 0 && $product->variants[0]->max_price_sale == 0){
+                                                            $min_price = $product->variants[0]->min_price_regular;
+                                                            $max_price = $product->variants[0]->max_price_regular;
+                                                        }
+                                                    @endphp
                                                         <span
-                                                            class="new-price">{{ number_format($product->price_sale, 0, ',', '.') }}<sup>đ</sup></span>
+                                                            class="new-price">{{ number_format($min_price, 0, ',', '.') }}<sup>đ</sup></span>
+                                                            -
                                                         <span
-                                                            class="old-price">{{ number_format($product->price_regular, 0, ',', '.') }}<sup>đ</sup></span>
+                                                            class="new-price">{{ number_format($max_price, 0, ',', '.') }}<sup>đ</sup></span>
                                                     </div>
                                                     <div class="rating-box">
                                                         <ul>
@@ -424,10 +456,25 @@
                                                     href="{{ route('product.detail', $productBestSeller->slug) }}">{{ $productBestSeller->name }}</a>
                                             </h3>
                                             <div class="price-box">
+                                                @php
+                                                        $min_price = $productBestSeller->variants[0]->min_price_sale;
+                                                        $max_price = $productBestSeller->variants[0]->max_price_sale;
+                                                        if($productBestSeller->variants[0]->min_price_sale == 0 && $productBestSeller->variants[0]->max_price_sale != 0) {
+                                                            $min_price = $productBestSeller->variants[0]->max_price_sale;
+                                                            $max_price = $productBestSeller->variants[0]->max_price_regular;
+                                                        } else if($productBestSeller->variants[0]->min_price_sale != 0 && $productBestSeller->variants[0]->max_price_sale == 0){
+                                                            $min_price = $productBestSeller->variants[0]->min_price_sale;
+                                                            $max_price = $productBestSeller->variants[0]->max_price_regular;
+                                                        } else if($productBestSeller->variants[0]->min_price_sale == 0 && $productBestSeller->variants[0]->max_price_sale == 0){
+                                                            $min_price = $productBestSeller->variants[0]->min_price_regular;
+                                                            $max_price = $productBestSeller->variants[0]->max_price_regular;
+                                                        }
+                                                    @endphp
                                                 <span
-                                                    class="new-price">{{ number_format($productBestSeller->price_sale, 0, ',', '.') }}<sup>đ</sup></span>
+                                                    class="new-price">{{ number_format($min_price, 0, ',', '.') }}<sup>đ</sup></span>
+                                                    -
                                                 <span
-                                                    class="old-price">{{ number_format($productBestSeller->price_regular, 0, ',', '.') }}<sup>đ</sup></span>
+                                                    class="new-price">{{ number_format($max_price, 0, ',', '.') }}<sup>đ</sup></span>
                                             </div>
                                         </div>
                                         {{-- <div class="add-actions">

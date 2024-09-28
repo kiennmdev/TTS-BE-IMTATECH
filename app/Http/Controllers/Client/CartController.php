@@ -11,7 +11,7 @@ class CartController extends Controller
 {
     public function list()
     {
-
+        // session()->forget('cart');
         if (session('cart')) {
             $this->calTotalPriceAndQuantity();
         }
@@ -21,24 +21,24 @@ class CartController extends Controller
 
     public function add()
     {
-        $product = Product::query()->findOrFail(request('product_id'));
-        $productVariant = ProductVariant::query()->with('color', 'size')->where(
+        // dd(request()->toArray());
+        $productVariant = ProductVariant::query()->with('color', 'size', 'product')->where(
             [
                 'product_id' => request('product_id'),
-                'product_color_id' => request('product_color_id'),
-                'product_size_id' => request('product_size_id'),
+                'product_color_id' => request('color_id'),
+                'product_size_id' => request('size_id'),
             ]
         )->firstOrFail();
 
-
         if (!isset(session('cart')[$productVariant->id])) {
-            $data = $product->toArray() + $productVariant->toArray() + ['quantity_purchase' => request('quantity')];
+            $data = $productVariant->toArray() + ['quantity_purchase' => request('quantity')];
             session()->put('cart.' . $productVariant->id, $data);
         } else {
             $data = session('cart')[$productVariant->id];
             $data['quantity_purchase'] = request('quantity');
             session()->put('cart.' . $productVariant->id, $data);
         }
+        // dd(session('cart'));
         return redirect()->route('cart.list');
     }
 

@@ -42,8 +42,6 @@
                                 <th>Name</th>
                                 <th>SKU</th>
                                 <th>Catalogue</th>
-                                <th>Price Regular</th>
-                                <th>Price Sale</th>
                                 <th>Views</th>
                                 <th>Is active</th>
                                 <th>Is hot deal</th>
@@ -71,8 +69,6 @@
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->sku }}</td>
                                 <td>{{ $item->catalogue->name }} </td>
-                                <td>{{ $item->price_regular }} </td>
-                                <td>{{ $item->price_sale }}</td>
                                 <td>{{ $item->views }} </td>
                                 <td>{!! $item->is_active
                                     ? '<span class="badge bg-success">Active</span>'

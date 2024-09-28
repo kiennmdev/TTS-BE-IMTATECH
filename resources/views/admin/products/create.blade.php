@@ -257,7 +257,7 @@
                 </div>
                 <!-- end card -->
 
-                <div class="card">
+                {{-- <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Product Price</h5>
                     </div>
@@ -273,7 +273,7 @@
                             <input type="number" class="form-control" id="name" name="price_sale" value="0">
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <!-- end card -->
 
                 <div class="card">

@@ -39,21 +39,21 @@
                                     </thead>
                                     <tbody>
 
-                                        @foreach (session('cart') as $idProduct => $product)
+                                        @foreach (session('cart') as $idVariant => $variant)
                                             <tr class="product_cart">
                                                 <td class="kenne-product-remove">
-                                                    <a href="{{ route('cart.destroy', $idProduct) }}"><i class="fa fa-trash"
+                                                    <a href="{{ route('cart.destroy', $idVariant) }}"><i class="fa fa-trash"
                                                             title="Remove"></i></a>
                                                 </td>
                                                 <td class="kenne-product-thumbnail"><a href="javascript:void(0)"><img
                                                             width="100px"
-                                                            src="{{ !\Str::contains($product['image'], 'http') ? \Storage::url($product['image']) : $product['image'] }}"
+                                                            src="{{ Storage::url($variant['image']) }}"
                                                             alt="Uren's Cart Thumbnail"></a></td>
                                                 <td class="kenne-product-name"><a
-                                                        href="javascript:void(0)">{{ $product['name'] . ' ' . $product['color']['name'] }}</a>
+                                                        href="javascript:void(0)">{{ $variant['product']['name'] . ' ' . $variant['color']['name'] }}</a>
                                                 </td>
                                                 @php
-                                                    $price = $product['price_sale'] ?? $product['price_regular'];
+                                                    $price = $variant['price_sale'] ?? $variant['price_regular'];
                                                 @endphp
                                                 <td class="kenne-product-price">
                                                     <span class="amount">
@@ -65,7 +65,7 @@
                                                     <label>Quantity</label>
                                                     <div class="cart-plus-minus">
                                                         <input class="cart-plus-minus-box quantity_product"
-                                                            value="{{ $product['quantity_purchase'] }}" type="number" name="product_variant[{{$idProduct}}]">
+                                                            value="{{ $variant['quantity_purchase'] }}" type="number" name="product_variant[{{$idVariant}}]">
                                                         <div class="dec qtybutton decrementButton"><i
                                                                 class="fa fa-angle-down"></i></div>
                                                         <div class="inc qtybutton incrementButton"><i
@@ -73,10 +73,10 @@
                                                     </div>
                                                 </td>
                                                 <td class="product-subtotal">
-                                                    <span class="amount total"> {{number_format($product['quantity_purchase'] * $price, 0, ',', '.')}}
+                                                    <span class="amount total"> {{number_format($variant['quantity_purchase'] * $price, 0, ',', '.')}}
                                                     </span><sup>đ</sup>
                                                     {{-- <input type="hidden" name="total_price" class="totalPost"> --}}
-                                                    <input type="hidden" class="id_product" value="{{ $idProduct }}">
+                                                    <input type="hidden" class="id_product" value="{{ $idVariant }}">
                                                 </td>
                                             </tr>
                                         @endforeach

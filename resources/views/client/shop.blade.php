@@ -122,14 +122,15 @@
                                         <div class="product-img">
                                             <a href="{{ route('product.detail', $product->slug) }}">
                                                 <img class="primary-img"
-                                                    src="{{ !\Str::contains($product->img_thumbnail, 'http') ? \Storage::url($product->img_thumbnail) : $product->img_thumbnail }}"
+                                                    src="{{ Storage::url($product->img_thumbnail) }}"
                                                     alt="Kenne's Product Image">
                                                 <img class="secondary-img"
-                                                    src="{{ !\Str::contains($product->img_thumbnail, 'http') ? \Storage::url($product->img_thumbnail) : $product->img_thumbnail }}"
+                                                    src="{{ Storage::url($product->img_thumbnail) }}"
                                                     alt="Kenne's Product Image">
                                             </a>
-                                            <span
-                                                class="sticker">-{{ number_format(($product->price_sale / $product->price_regular) * 100) }}%</span>
+                                            {{-- <span class="sticker">
+                                                -{{ number_format(($product->price_sale / $product->price_regular) * 100) }}%
+                                            </span> --}}
                                             {{-- <div class="add-actions">
                                                 <ul>
                                                     <li class="quick-view-btn" data-bs-toggle="modal"
@@ -158,11 +159,26 @@
                                                         href="{{ route('product.detail', $product->slug) }}">{{ $product->name }}</a>
                                                 </h3>
                                                 <div class="price-box">
+                                                    @php
+                                                        $min_price = $product->variants[0]->min_price_sale;
+                                                        $max_price = $product->variants[0]->max_price_sale;
+                                                        if($product->variants[0]->min_price_sale == 0 && $product->variants[0]->max_price_sale != 0) {
+                                                            $min_price = $product->variants[0]->max_price_sale;
+                                                            $max_price = $product->variants[0]->max_price_regular;
+                                                        } else if($product->variants[0]->min_price_sale != 0 && $product->variants[0]->max_price_sale == 0){
+                                                            $min_price = $product->variants[0]->min_price_sale;
+                                                            $max_price = $product->variants[0]->max_price_regular;
+                                                        } else if($product->variants[0]->min_price_sale == 0 && $product->variants[0]->max_price_sale == 0){
+                                                            $min_price = $product->variants[0]->min_price_regular;
+                                                            $max_price = $product->variants[0]->max_price_regular;
+                                                        }
+                                                    @endphp
                                                     <span class="new-price">
-                                                        {{ number_format($product->price_sale, 0, ',', '.') }}<sup>đ</sup>
+                                                        {{ number_format($min_price, 0, ',', '.') }}<sup>đ</sup>
                                                     </span>
-                                                    <span class="old-price">
-                                                        {{ number_format($product->price_regular, 0, ',', '.') }}<sup>đ</sup>
+                                                    -
+                                                    <span class="new-price">
+                                                        {{ number_format($max_price, 0, ',', '.') }}<sup>đ</sup>
                                                     </span>
                                                 </div>
                                                 <div class="rating-box">
@@ -183,7 +199,7 @@
                                     <div class="single-product">
                                         <div class="product-img">
                                             <a href="{{ route('product.detail', $product->slug) }}">
-                                                <img src="{{ !\Str::contains($product->img_thumbnail, 'http') ? \Storage::url($product->img_thumbnail) : $product->img_thumbnail }}"
+                                                <img src="{{ Storage::url($product->img_thumbnail) }}"
                                                     alt="Kenne's Product Image">
                                             </a>
                                         </div>
@@ -191,10 +207,11 @@
                                             <div class="product-desc_info">
                                                 <div class="price-box">
                                                     <span
-                                                        class="new-price">{{ number_format($product->price_regular, 0, ',', '.') }}<sup>đ</sup>
+                                                        class="new-price">{{ number_format($min_price, 0, ',', '.') }}<sup>đ</sup>
                                                     </span>
+                                                    -
                                                     <span
-                                                        class="old-price">{{ number_format($product->price_sale, 0, ',', '.') }}<sup>đ</sup>
+                                                        class="new-price">{{ number_format($max_price, 0, ',', '.') }}<sup>đ</sup>
                                                     </span>
                                                 </div>
                                                 <h6 class="product-name"><a
@@ -211,10 +228,9 @@
                                                     </ul>
                                                 </div>
                                                 <div class="product-short_desc">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                                                        eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                                                        enim ad minim veniam, quis nostrud exercitation ullamco,Proin
-                                                        lectus ipsum, gravida et mattis vulputate, tristique ut lectus
+                                                    <p>
+                                                        Mô tả: {{$product->description}} <br>
+                                                        Chất liệu: {{$product->material}}
                                                     </p>
                                                 </div>
                                             </div>

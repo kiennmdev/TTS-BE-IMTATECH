@@ -284,7 +284,7 @@
             </div>
             <!-- end card -->
 
-            <div class="card">
+            {{-- <div class="card">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Product Price</h5>
                 </div>
@@ -301,7 +301,7 @@
                             value="{{ $productEdit->price_sale }}">
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <!-- end card -->
 
             <div class="card">

@@ -68,14 +68,14 @@
                         </div>
                     </div>
                     <div class="col-lg-8">
-                        <form action="{{ route('cart.add') }}" method="post">
+                        <form action="{{ route('cart.add') }}" method="post" id="form-submit">
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
                             <div class="sp-content">
                                 <div class="sp-heading">
                                     <h5><a href="#">{{ $product->name }}</a></h5>
                                 </div>
-                                <span class="reference">Catelogue: {{ $product->catalogue->name }}</span>
+                                <span class="reference">Loại: {{ $product->catalogue->name }}</span>
                                 <div class="rating-box">
                                     <ul>
                                         <li><i class="ion-android-star"></i></li>
@@ -87,34 +87,77 @@
                                 </div>
                                 <div class="sp-essential_stuff">
                                     <ul>
-                                        <li>SKU: <a href="javascript:void(0)">{{ $product->sku }}</a></li>
-                                        <li class="price-box">
-                                            Price: <span class="old-price">
-                                                {{ number_format($product->price_regular, 0, ',', '.') }}<sup>đ</sup>
-                                            </span>
-                                            <span class="new-price">
-                                                {{ number_format($product->price_sale, 0, ',', '.') }}<sup>đ</sup> </span>
+                                        <li>Mã SKU: <a href="javascript:void(0)">{{ $product->sku }}</a></li>
+                                        <li class="price-box" id="price-variant">
+                                            Giá: @php
+                                                $min_price = $product->variants[0]->min_price_sale;
+                                                $max_price = $product->variants[0]->max_price_sale;
+                                                if (
+                                                    $product->variants[0]->min_price_sale == 0 &&
+                                                    $product->variants[0]->max_price_sale != 0
+                                                ) {
+                                                    $min_price = $product->variants[0]->max_price_sale;
+                                                    $max_price = $product->variants[0]->max_price_regular;
+                                                } elseif (
+                                                    $product->variants[0]->min_price_sale != 0 &&
+                                                    $product->variants[0]->max_price_sale == 0
+                                                ) {
+                                                    $min_price = $product->variants[0]->min_price_sale;
+                                                    $max_price = $product->variants[0]->max_price_regular;
+                                                } elseif (
+                                                    $product->variants[0]->min_price_sale == 0 &&
+                                                    $product->variants[0]->max_price_sale == 0
+                                                ) {
+                                                    $min_price = $product->variants[0]->min_price_regular;
+                                                    $max_price = $product->variants[0]->max_price_regular;
+                                                }
+                                            @endphp
+                                            <span
+                                                class="new-price">{{ number_format($min_price, 0, ',', '.') }}<sup>đ</sup></span>
+                                            -
+                                            <span
+                                                class="new-price">{{ number_format($max_price, 0, ',', '.') }}<sup>đ</sup></span>
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="product-size_box">
-                                    <span>Size</span>
-                                    <select class="myniceselect nice-select" name="product_size_id">
-                                        @foreach ($sizes as $id => $name)
-                                            <option value="{{ $id }}">{{ $name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="product-size_box">
-                                    <span>Color</span>
-                                    <select class="myniceselect nice-select" name="product_color_id">
-                                        @foreach ($colors as $id => $name)
-                                            <option value="{{ $id }}">{{ $name }}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="color-list_area">
+                                    <div class="size_box">
+                                        <div class="d-flex">
+                                            <span class="me-3">Kích Cỡ:</span>
+                                            <div class="color-container">
+                                                @foreach ($sizes as $size)
+                                                    <div class="border-size">
+                                                        <div class="size-product align-middle text-center"
+                                                            data-index="{{ $size->id }}">{{ $size->name }}</div>
+                                                        <input type="radio" id="size{{ $size->id }}" class="d-none"
+                                                            name="size_id" value="{{ $size->id }}">
+                                                    </div>
+                                                @endforeach
+
+                                            </div>
+                                        </div>
+                                        <div id="errorPropertySize" class="text-danger d-block"></div>
+                                    </div>
+                                    <div class="color_box mt-4">
+                                        <div class="d-flex">
+                                            <span class="me-3">Màu Sắc:</span>
+                                            <div class="color-container">
+                                                @foreach ($colors as $color)
+                                                    <div class="border-color">
+                                                        <div class="color-product" data-index="{{ $color->id }}"
+                                                            style="background-color: {{ $color->code }};"></div>
+                                                        <input type="radio" id="color{{ $color->id }}" class="d-none"
+                                                            name="color_id" value="{{ $color->id }}">
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                        <div id="errorPropertyColor" class="text-danger mb-3"></div>
+                                    </div>
+
                                 </div>
                                 <div class="quantity">
-                                    <label>Quantity</label>
+                                    <label>Số Lượng:</label>
                                     <div class="cart-plus-minus">
                                         <input class="cart-plus-minus-box" value="1" type="text" name="quantity">
                                         <div class="dec qtybutton"><i class="fa fa-angle-down"></i></div>
@@ -124,13 +167,14 @@
                                 <div class="qty-btn_area">
                                     <ul>
                                         <li>
-                                            <button type="submit" class="qty-cart_btn">Add To Cart</button>
+                                            <button type="button" onclick="addToCart()" class="qty-cart_btn">Thêm Vào Giỏ
+                                                Hàng</button>
                                         </li>
-                                        <li><a class="qty-wishlist_btn" href="javascript:void(0)" data-bs-toggle="tooltip"
+                                        {{-- <li><a class="qty-wishlist_btn" href="javascript:void(0)" data-bs-toggle="tooltip"
                                                 title="Add To Wishlist"><i class="ion-android-favorite-outline"></i></a>
                                         </li>
                                         <li><a class="qty-compare_btn" href="javascript:void(0)" data-bs-toggle="tooltip"
-                                                title="Compare This Product"><i class="ion-ios-shuffle-strong"></i></a></li>
+                                                title="Compare This Product"><i class="ion-ios-shuffle-strong"></i></a></li> --}}
                                     </ul>
                                 </div>
                                 <div class="kenne-tag-line">
@@ -190,28 +234,28 @@
                     <div class="sp-product-tab_nav">
                         <div class="product-tab">
                             <ul class="nav product-menu">
-                                <li><a class="active" data-bs-toggle="tab"
-                                        href="#description"><span>Description</span></a>
+                                <li><a class="active" data-bs-toggle="tab" href="#description"><span>Mô Tả</span></a>
                                 </li>
-                                <li><a data-bs-toggle="tab" href="#comments"><span>Comments</span></a>
+                                <li><a data-bs-toggle="tab" href="#comments"><span>Bình Luận</span></a>
                                 </li>
-                                <li><a data-bs-toggle="tab" href="#specification"><span>Specification</span></a></li>
-                                <li><a data-bs-toggle="tab" href="#reviews"><span>Reviews (1)</span></a></li>
+                                {{-- <li><a data-bs-toggle="tab" href="#specification"><span>Specification</span></a></li> --}}
+                                <li><a data-bs-toggle="tab" href="#reviews"><span>Đánh Giá (1)</span></a></li>
                             </ul>
                         </div>
                         <div class="tab-content uren-tab_content">
                             <div id="description" class="tab-pane active show" role="tabpanel">
                                 <div class="product-description">
-                                    {!!$product->content!!}
+                                    {!! $product->content !!}
                                 </div>
                             </div>
                             <div id="comments" class="tab-pane" role="tabpanel">
                                 <div class="tab-pane active" id="tab-comment">
                                     @if (Auth::check())
-                                        <form class="form-horizontal" id="form-comment" method="POST" action="{{route('comment.save')}}">
+                                        <form class="form-horizontal" id="form-comment" method="POST"
+                                            action="{{ route('comment.save') }}">
                                             @csrf
-                                            <input type="hidden" name="user_id" value="{{Auth::user()->id}}">
-                                            <input type="hidden" name="product_id" value="{{$product->id}}">
+                                            <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
                                             <div class="form-group required second-child">
                                                 <div class="col-sm-12 p-0">
                                                     <label class="control-label">Comment:</label>
@@ -227,7 +271,8 @@
                                         </form>
                                     @else
                                         <div class="text-end mb-3">
-                                            Vui lòng <a style="color: #a8741a" href="{{route('form.login')}}">đăng nhập</a> để bình luận.
+                                            Vui lòng <a style="color: #a8741a" href="{{ route('form.login') }}">đăng
+                                                nhập</a> để bình luận.
                                         </div>
                                     @endif
 
@@ -253,7 +298,7 @@
 
                                 </div>
                             </div>
-                            <div id="specification" class="tab-pane" role="tabpanel">
+                            {{-- <div id="specification" class="tab-pane" role="tabpanel">
                                 <table class="table table-bordered specification-inner_stuff">
                                     <tbody>
                                         <tr>
@@ -278,7 +323,7 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
+                            </div> --}}
                             <div id="reviews" class="tab-pane" role="tabpanel">
                                 <div class="tab-pane active" id="tab-review">
                                     <form class="form-horizontal" id="form-review">
@@ -387,18 +432,19 @@
                         ]'>
 
                         @foreach ($productBestSellers as $productBestSeller)
-                            
-                        <div class="product-item">
-                            <div class="single-product">
-                                <div class="product-img">
-                                    <a href="single-product.html">
-                                        <img class="primary-img" src="{{Storage::url($productBestSeller->img_thumbnail)}}"
-                                            alt="Kenne's Product Image">
-                                        <img class="secondary-img" src="{{Storage::url($productBestSeller->img_thumbnail)}}"
-                                            alt="Kenne's Product Image">
-                                    </a>
-                                    <span class="sticker">Bestseller</span>
-                                    {{-- <div class="add-actions">
+                            <div class="product-item">
+                                <div class="single-product">
+                                    <div class="product-img">
+                                        <a href="single-product.html">
+                                            <img class="primary-img"
+                                                src="{{ Storage::url($productBestSeller->img_thumbnail) }}"
+                                                alt="Kenne's Product Image">
+                                            <img class="secondary-img"
+                                                src="{{ Storage::url($productBestSeller->img_thumbnail) }}"
+                                                alt="Kenne's Product Image">
+                                        </a>
+                                        <span class="sticker">Bestseller</span>
+                                        {{-- <div class="add-actions">
                                         <ul>
                                             <li class="quick-view-btn" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModalCenter"><a href="javascript:void(0)"
@@ -416,28 +462,54 @@
                                             </li>
                                         </ul>
                                     </div> --}}
-                                </div>
-                                <div class="product-content">
-                                    <div class="product-desc_info">
-                                        <h3 class="product-name"><a href="single-product.html">{{$productBestSeller->name}}</a></h3>
-                                        <div class="price-box">
-                                            <span class="new-price">{{ number_format($productBestSeller->price_sale, 0, ',', '.') }}<sup>đ</sup></span>
-                                            <span class="old-price">{{ number_format($productBestSeller->price_regular, 0, ',', '.') }}<sup>đ</sup></span>
-                                        </div>
-                                        <div class="rating-box">
-                                            <ul>
-                                                <li><i class="ion-ios-star"></i></li>
-                                                <li><i class="ion-ios-star"></i></li>
-                                                <li><i class="ion-ios-star"></i></li>
-                                                <li><i class="ion-ios-star"></i></li>
-                                                <li><i class="ion-ios-star"></i></li>
-                                            </ul>
+                                    </div>
+                                    <div class="product-content">
+                                        <div class="product-desc_info">
+                                            <h3 class="product-name"><a
+                                                    href="single-product.html">{{ $productBestSeller->name }}</a></h3>
+                                            <div class="price-box">
+                                                @php
+                                                    $min_price = $productBestSeller->variants[0]->min_price_sale;
+                                                    $max_price = $productBestSeller->variants[0]->max_price_sale;
+                                                    if (
+                                                        $productBestSeller->variants[0]->min_price_sale == 0 &&
+                                                        $productBestSeller->variants[0]->max_price_sale != 0
+                                                    ) {
+                                                        $min_price = $productBestSeller->variants[0]->max_price_sale;
+                                                        $max_price = $productBestSeller->variants[0]->max_price_regular;
+                                                    } elseif (
+                                                        $productBestSeller->variants[0]->min_price_sale != 0 &&
+                                                        $productBestSeller->variants[0]->max_price_sale == 0
+                                                    ) {
+                                                        $min_price = $productBestSeller->variants[0]->min_price_sale;
+                                                        $max_price = $productBestSeller->variants[0]->max_price_regular;
+                                                    } elseif (
+                                                        $productBestSeller->variants[0]->min_price_sale == 0 &&
+                                                        $productBestSeller->variants[0]->max_price_sale == 0
+                                                    ) {
+                                                        $min_price = $productBestSeller->variants[0]->min_price_regular;
+                                                        $max_price = $productBestSeller->variants[0]->max_price_regular;
+                                                    }
+                                                @endphp
+                                                <span
+                                                    class="new-price">{{ number_format($min_price, 0, ',', '.') }}<sup>đ</sup></span>
+                                                -
+                                                <span
+                                                    class="new-price">{{ number_format($max_price, 0, ',', '.') }}<sup>đ</sup></span>
+                                            </div>
+                                            <div class="rating-box">
+                                                <ul>
+                                                    <li><i class="ion-ios-star"></i></li>
+                                                    <li><i class="ion-ios-star"></i></li>
+                                                    <li><i class="ion-ios-star"></i></li>
+                                                    <li><i class="ion-ios-star"></i></li>
+                                                    <li><i class="ion-ios-star"></i></li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
                         @endforeach
 
                     </div>
@@ -455,5 +527,119 @@
             color: #ffffff;
             padding: 10px 15px;
         }
+
+        .color-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .color-product,
+        .size-product {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 1px;
+        }
+
+        .border-color,
+        .border-size {
+            border: 1px solid #ddd;
+            padding: 2px;
+        }
+
+        .selected-color,
+        .selected-size {
+            border: 0.5px solid rgb(84, 84, 84);
+        }
     </style>
+@endsection
+
+@section('scripts')
+    <script>
+        const priceTable = {!! json_encode($priceTableVariants) !!}
+
+        let selectedSize = null;
+        let selectedColor = null;
+
+        let colorProducts = document.querySelectorAll(".color-product");
+        let borderColors = document.querySelectorAll('.border-color');
+        let sizeProducts = document.querySelectorAll(".size-product");
+        let borderSizes = document.querySelectorAll('.border-size');
+        colorProducts.forEach(colorProduct => {
+            colorProduct.addEventListener('click', function() {
+                borderColors.forEach(btn => btn.classList.remove('selected-color'));
+                let parentElement = this.closest('.border-color');
+                let index = this.dataset.index;
+                let inputColor = document.querySelector(`#color${index}`);
+
+                selectedColor = index;
+                parentElement.classList.add('selected-color');
+                inputColor.checked = true;
+                updatePrice();
+            })
+        });
+
+        sizeProducts.forEach(sizeProduct => {
+            sizeProduct.addEventListener('click', function() {
+                borderSizes.forEach(btn => btn.classList.remove('selected-size'));
+                let parentElement = this.closest('.border-size');
+                let index = this.dataset.index;
+                let inputSize = document.querySelector(`#size${index}`);
+
+                selectedSize = index;
+                parentElement.classList.add('selected-size');
+                inputSize.checked = true;
+                updatePrice();
+            })
+        });
+
+        function updatePrice() {
+            if (!(selectedSize && selectedColor)) return;
+
+            let priceVariant = document.querySelector('#price-variant');
+            let price = priceTable[selectedSize][selectedColor];
+
+            if (price.includes("-")) {
+                let arrPrice = price.split("-");
+
+                priceVariant.innerHTML =
+                    `Giá:  <span
+                            class="new-price">${formatVND(arrPrice[1])}</span>-
+                        <span
+                            class="old-price">${formatVND(arrPrice[0])}</span>`;
+                return;
+            }
+            priceVariant.innerHTML = `Giá:  <span
+                            class="new-price">${formatVND(price)}</span>`
+        }
+
+        function formatVND(param) {
+            let number = Number(param);
+            return number.toLocaleString('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            });
+        }
+
+        function addToCart() {
+            let form = document.querySelector("#form-submit");
+            let errorSize = document.querySelector('#errorPropertySize');
+            let errorColor = document.querySelector('#errorPropertyColor');
+            if (!selectedSize) {
+                errorSize.innerHTML = "Hãy chọn kích thước";
+                return;
+            } else {
+                errorSize.innerHTML = ''
+            }
+            if (!selectedColor) {
+                errorColor.innerHTML = "Hãy chọn màu sắc";
+                return;
+            } else {
+                errorColor.innerHTML = ''
+            }
+
+            form.submit();
+        }
+    </script>
 @endsection
