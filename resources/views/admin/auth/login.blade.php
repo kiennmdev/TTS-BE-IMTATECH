@@ -82,7 +82,7 @@
                                             @enderror
 
                                             @session('error')
-                                                <span class="invalid-feedback" style="display:block" role="alert">
+                                                <span class="invalid-feedback hello" style="display:block" role="alert">
                                                     <strong>{{ session('error') }}</strong>
                                                 </span>
                                             @endsession
@@ -175,6 +175,10 @@
         <!-- end Footer -->
     </div>
     <!-- end auth-page-wrapper -->
+    
+    <script>
+        const PATH_ROOT = '{{ asset('theme/admin') }}';
+    </script>
 
     <!-- JAVASCRIPT -->
     <script src="{{ asset('theme/admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

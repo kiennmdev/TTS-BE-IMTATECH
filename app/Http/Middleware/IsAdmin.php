@@ -22,6 +22,6 @@ class IsAdmin
             
         }
 
-        return redirect()->route('admin.login')->with('error', 'Tài khoản này không tồn tại');
+        return redirect()->route('admin.login')->with('error', 'Tài khoản này không tồn tại hoặc không phải quản trị viên');
     }
 }

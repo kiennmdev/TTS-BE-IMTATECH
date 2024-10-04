@@ -24,31 +24,34 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="coupon-accordion">
-                        <h3>Returning customer? <span id="showlogin">Click here to login</span></h3>
-                        <div id="checkout-login" class="coupon-content">
-                            <div class="coupon-info">
-                                <p class="coupon-text">Quisque gravida turpis sit amet nulla posuere lacinia. Cras sed est
-                                    sit amet ipsum luctus.</p>
-                                <form action="javascript:void(0)">
-                                    <p class="form-row-first">
-                                        <label>Username or email <span class="required">*</span></label>
-                                        <input type="text">
-                                    </p>
-                                    <p class="form-row-last">
-                                        <label>Password <span class="required">*</span></label>
-                                        <input type="text">
-                                    </p>
-                                    <p class="form-row">
-                                        <input value="Login" type="submit">
-                                        <label>
-                                            <input type="checkbox">
-                                            Remember me
-                                        </label>
-                                    </p>
-                                    <p class="lost-password"><a href="javascript:void(0)">Lost your password?</a></p>
-                                </form>
+                        @if (!Auth::check())
+                            <h3>Returning customer? <span id="showlogin">Click here to login</span></h3>
+                            <div id="checkout-login" class="coupon-content">
+                                <div class="coupon-info">
+                                    <p class="coupon-text">Quisque gravida turpis sit amet nulla posuere lacinia. Cras sed
+                                        est
+                                        sit amet ipsum luctus.</p>
+                                    <form action="javascript:void(0)">
+                                        <p class="form-row-first">
+                                            <label>Username or email <span class="required">*</span></label>
+                                            <input type="text">
+                                        </p>
+                                        <p class="form-row-last">
+                                            <label>Password <span class="required">*</span></label>
+                                            <input type="text">
+                                        </p>
+                                        <p class="form-row">
+                                            <input value="Login" type="submit">
+                                            <label>
+                                                <input type="checkbox">
+                                                Remember me
+                                            </label>
+                                        </p>
+                                        <p class="lost-password"><a href="javascript:void(0)">Lost your password?</a></p>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
+                        @endif
                         <h3>Have a coupon? <span id="showcoupon">Click here to enter your code</span></h3>
                         <div id="checkout_coupon" class="coupon-checkout-content">
                             <div class="coupon-info">
@@ -76,56 +79,101 @@
                                 <div class="col-md-12">
                                     <div class="checkout-form-list">
                                         <label>Your Name <span class="required">*</span></label>
-                                        <input placeholder="Your Name" type="text" name="user_name" value="">
+                                        <input class="@error('user_name') is-invalid @enderror" placeholder="Your Name"
+                                            type="text" name="user_name">
+                                        @error('user_name')
+                                            <span class="invalid-feedback d-block" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="checkout-form-list">
                                         <label>Address <span class="required">*</span></label>
-                                        <input placeholder="Address" type="text" name="user_address" value="">
+                                        <input class="@error('user_address') is-invalid @enderror" placeholder="Address"
+                                            type="text" name="user_address">
+                                        @error('user_address')
+                                            <span class="invalid-feedback d-block" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="checkout-form-list">
                                         <label>Email Address <span class="required">*</span></label>
-                                        <input placeholder="Email Address" type="email" name="user_email" value="">
+                                        <input class="@error('user_email') is-invalid @enderror" placeholder="Email Address"
+                                            type="email" name="user_email">
+                                        @error('user_email')
+                                            <span class="invalid-feedback d-block" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="checkout-form-list">
                                         <label>Phone <span class="required">*</span></label>
-                                        <input placeholder="Phone" type="text" name="user_phone" value="">
+                                        <input class="@error('user_phone') is-invalid @enderror" placeholder="Phone"
+                                            type="text" name="user_phone">
+                                        @error('user_phone')
+                                            <span class="invalid-feedback d-block" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                             @else
                                 <div class="col-md-12">
                                     <div class="checkout-form-list">
                                         <label>Your Name <span class="required">*</span></label>
-                                        <input placeholder="Your Name" type="text" name="user_name"
-                                            value="{{ Auth::user()->name }}">
+                                        <input class="@error('user_name') is-invalid @enderror" placeholder="Your Name"
+                                            type="text" name="user_name" value="{{ Auth::user()->name }}">
+                                        @error('user_name')
+                                            <span class="invalid-feedback d-block" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="checkout-form-list">
                                         <label>Address <span class="required">*</span></label>
-                                        <input placeholder="Address" type="text" name="user_address"
-                                            value="{{ Auth::user()->address }}">
+                                        <input class="@error('user_address') is-invalid @enderror" placeholder="Address"
+                                            type="text" name="user_address" value="{{ Auth::user()->address }}">
+                                        @error('user_address')
+                                            <span class="invalid-feedback d-block" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="checkout-form-list">
                                         <label>Email Address <span class="required">*</span></label>
-                                        <input placeholder="Email Address" type="email" name="user_email"
+                                        <input class="@error('user_email') is-invalid @enderror"
+                                            placeholder="Email Address" type="email" name="user_email"
                                             value="{{ Auth::user()->email }}">
+                                        @error('user_email')
+                                            <span class="invalid-feedback d-block" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="checkout-form-list">
                                         <label>Phone <span class="required">*</span></label>
-                                        <input placeholder="Phone" type="text" name="user_phone"
-                                            value="{{ Auth::user()->phone }}">
+                                        <input class="@error('user_phone') is-invalid @enderror" placeholder="Phone"
+                                            type="text" name="user_phone" value="{{ Auth::user()->phone }}">
+                                        @error('user_phone')
+                                            <span class="invalid-feedback d-block" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                             @endif
@@ -159,14 +207,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($cart as $product)
+                                    @foreach ($cart as $productVariant)
                                         <tr class="cart_item">
-                                            <td class="cart-product-name">{{ $product['name'] }}<strong
+                                            <td class="cart-product-name">
+                                                {{ $productVariant['product']['name'] . ' ' . $productVariant['color']['name'] }}<strong
                                                     class="product-quantity">
-                                                    × {{ $product['quantity_purchase'] }}</strong>
+                                                    × {{ $productVariant['quantity_purchase'] }}</strong>
                                             </td>
                                             @php
-                                                $price = $product['price_sale'] ?? $product['price_regular'];
+                                                $price =
+                                                    $productVariant['price_sale'] ?? $productVariant['price_regular'];
                                             @endphp
                                             <td class="cart-product-total">
                                                 <span class="amount">{{ number_format($price, 0, ',', '.') }}<sup>đ</sup>
@@ -179,7 +229,8 @@
                                     <tr class="cart-subtotal">
                                         <th>Tạm tính</th>
                                         <td>
-                                            <span class="amount">{{ number_format($totalAmount, 0, ',', '.') }}<sup>đ</sup>
+                                            <span
+                                                class="amount">{{ number_format($totalAmount, 0, ',', '.') }}<sup>đ</sup>
                                             </span>
                                         </td>
                                     </tr>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Client\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\CartController;
 use App\Http\Controllers\Client\Auth\LoginController;
@@ -58,9 +59,19 @@ Route::get('/verify/{token}', [LoginController::class, 'verify'])->name('verify'
 
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::get('/password/reset', [ForgotPasswordController::class, 'showFormForgotPassword'])->name("show.form.forgot");
+
+Route::post('/password/reset', [ForgotPasswordController::class, 'sendMailReset'])->name("send.mail.reset");
+
+Route::get('/password/reset/{email}', [ForgotPasswordController::class, 'showFormResetPassword'])->name("show.form.reset");
+
+Route::post('/password/reset/update', [ForgotPasswordController::class, 'ResetUpdatePassword'])->name("reset.update");
+
 Route::middleware(['is.login'])->group(function () {
     
     Route::get('/my-account', [MyAccountController::class, 'index'])->name('my.account');
+
+    Route::get("cancel/order/{order}", [OrderController::class, 'canceledOrder'])->name('canceled.order');
 
     Route::get('/order/detail/{order}', [OrderController::class, 'detail'])->name('order.detail');
 

@@ -32,6 +32,14 @@ class OrderController extends Controller
 
     public function create(Request $request)
     {
+        // dd(session('cart'));
+        // dd($request->toArray());
+        $validate = $request->validate([
+            "user_name" => ["required"],
+            "user_address" => ["required"],
+            "user_email" => ["required", 'email'],
+            "user_phone" => ["required"]
+        ]);
 
         // dd($request->except('_token', 'payment_method'));
 
@@ -52,9 +60,9 @@ class OrderController extends Controller
                         $dataItem[] = [
                             'product_variant_id' => $variantID,
                             'quantity' => $item['quantity_purchase'],
-                            'product_name' => $item['name'],
-                            'product_sku' => $item['sku'],
-                            'product_img_thumbnail' => $item['img_thumbnail'],
+                            'product_name' => $item['product']['name'],
+                            'product_sku' => $item['product']['sku'],
+                            'product_img_thumbnail' => $item['image'],
                             'product_price_regular' => $item['price_regular'],
                             'product_price_sale' => $item['price_sale'],
                             'variant_size_name' => $item['size']['name'],
@@ -66,10 +74,10 @@ class OrderController extends Controller
 
                         $order = Order::query()->create([
                             'user_id' => Auth::user()->id,
-                            'user_name' => Auth::user()->name,
-                            'user_email' => Auth::user()->email,
-                            'user_phone' => Auth::user()->phone,
-                            'user_address' => Auth::user()->address,
+                            'user_name' => $request->user_name,
+                            'user_email' => $request->user_email,
+                            'user_phone' => $request->user_phone,
+                            'user_address' => $request->user_address,
                             'discount' => $request->discount ?? 0,
                             'total_price' => $request->total_price,
 
@@ -122,6 +130,13 @@ class OrderController extends Controller
         $orderItems  = Order::with('order_items')->find($order->id);
 
         return view('client.order-detail', compact('orderItems'));
+    }
+
+    public function canceledOrder(Order $order) {
+        if ($order->status_order == "pending" || $order->status_order == "confirmed") {
+            $order->update(['status_order' => 'canceled']);
+        }
+        return back();
     }
 
     public function addCoupon(Request $request)

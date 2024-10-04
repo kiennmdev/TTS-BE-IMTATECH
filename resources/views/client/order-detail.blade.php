@@ -66,13 +66,16 @@
                                 <div class="myaccount-orders">
                                     <h4 class="small-title">ORDERS #{{ $orderItems->id }}</h4>
                                     <div class="table-responsive">
-                                        <table class="table table-bordered">
+                                        <table class="table ">
                                             <tr>
                                                 <th>Product Details</th>
                                                 <th>Price regular</th>
                                                 <th>Price sale</th>
                                                 <th>Quantity</th>
                                                 <th>Total</th>
+                                                @if ($orderItems->status_order == 'delivered')
+                                                    <th></th>
+                                                @endif
                                             </tr>
                                             <tbody>
                                                 @foreach ($orderItems->order_items as $item)
@@ -85,16 +88,67 @@
                                                             <div class="">
                                                                 <h5>{{ $item->product_name }}</h5>
                                                                 <p class="mb-1">Color:
-                                                                    <span>{{ $item->variant_color_name }}</span></p>
+                                                                    <span>{{ $item->variant_color_name }}</span>
+                                                                </p>
                                                                 <p class="mb-1">Size:
-                                                                    <span>{{ $item->variant_size_name }}</span></p>
+                                                                    <span>{{ $item->variant_size_name }}</span>
+                                                                </p>
                                                             </div>
                                                         </td>
                                                         <td>{{ $item->product_price_regular }}<sup>đ</sup></td>
                                                         <td>{{ $item->product_price_sale }}<sup>đ</sup></td>
                                                         <td>{{ $item->quantity }}</td>
-                                                        <td>{{ $item->product_price_sale * $item->quantity }}<sup>đ</sup></td>
+                                                        <td>{{ $item->product_price_sale * $item->quantity }}<sup>đ</sup>
+                                                        </td>
+                                                        @if ($orderItems->status_order == 'delivered')
+                                                            <td>
+                                                                <button type="button" class="kenne-btn kenne-btn_sm"
+                                                                    style="width: 100px;" data-bs-toggle="modal"
+                                                                    data-bs-target="#exampleModal{{$item->id}}">Viết đánh
+                                                                    giá</button>
+                                                            </td>
+                                                        @endif
                                                     </tr>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="exampleModal{{$item->id}}" tabindex="-1"
+                                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="exampleModalLabel">Đánh giá
+                                                                        sản phẩm này</h5>
+                                                                </div>
+                                                                <form action="" method="POST">
+                                                                    @csrf
+                                                                    <div class="modal-body">
+                                                                        <div class="mb-3">
+                                                                            <label for="" class="form-label">Mức độ hài lòng</label>
+                                                                            <select name="" id="" class="form-select">
+                                                                                <option value="5">Rất Tốt</option>
+                                                                                <option value="4">Tốt</option>
+                                                                                <option value="3">Tạm</option>
+                                                                                <option value="2">Kém</option>
+                                                                                <option value="1">Rất Tệ</option>
+                                                                            </select>
+                                                                          </div>
+                                                                          <div class="mb-3">
+                                                                            <label for="rating" class="form-label">Viết đánh giá</label>
+                                                                            <textarea class="form-control" id="rating" rows="3" placeholder="Bạn nghĩ như thế nào về kiểu dáng, độ vừa vặn, kích thước, màu sắc"></textarea>
+                                                                          </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button"
+                                                                            style="background: gray; padding:5px 10px"
+                                                                            class="btn btn-secondary"
+                                                                            data-bs-dismiss="modal">Đóng</button>
+                                                                        <button type="submit"
+                                                                            style="background: blue; padding:5px 10px"
+                                                                            class="btn btn-primary">Gửi</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 @endforeach
 
                                                 @php
@@ -105,21 +159,25 @@
                                                 @endphp
 
                                                 <tr class="border-top border-top-dashed">
-                                                    <td colspan="3"></td>
-                                                    <td colspan="2" class="fw-medium p-0">
-                                                        <table class="table table-borderless mb-0">
+                                                    {{-- <td colspan="4"></td> --}}
+                                                    <td colspan="5" class="fw-medium p-0">
+                                                        <table class="table mb-0">
                                                             <tbody>
                                                                 <tr>
                                                                     <td class="text-start">Sub Total :</td>
-                                                                    <td class="text-end">{{$totalTemp}}<sup>đ</sup></td>
+                                                                    <td class="text-end">{{ $totalTemp }}<sup>đ</sup>
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td class="text-start">Discount <span class="text-muted">(KENNE)</span> :</td>
-                                                                    <td class="text-end">-{{$orderItems->discount}}<sup>đ</sup></td>
+                                                                    <td class="text-start">Discount <span
+                                                                            class="text-muted">(KENNE)</span> :</td>
+                                                                    <td class="text-end">
+                                                                        -{{ $orderItems->discount }}<sup>đ</sup></td>
                                                                 </tr>
                                                                 <tr class="border-top border-top-dashed">
                                                                     <th scope="row" class="text-start">Total :</th>
-                                                                    <th class="text-end">{{$orderItems->total_price}}<sup>đ</sup></th>
+                                                                    <th class="text-end">
+                                                                        {{ $orderItems->total_price }}<sup>đ</sup></th>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
@@ -128,6 +186,7 @@
 
                                             </tbody>
                                         </table>
+
                                     </div>
                                 </div>
                             </div>

@@ -1,18 +1,14 @@
 @extends('client.layouts.master')
 
-@section('title')
-    Login
-@endsection
-
 @section('content')
     <!-- Begin Kenne's Breadcrumb Area -->
     <div class="breadcrumb-area">
         <div class="container">
             <div class="breadcrumb-content">
-                <h2>Đăng nhập</h2>
+                <h2>Đặt lại mật Khẩu</h2>
                 <ul>
-                    <li><a href="index.html">Trang chủ</a></li>
-                    <li class="active">Đăng nhập</li>
+                    <li><a href="{{ route('home') }}">Trang Chủ</a></li>
+                    <li class="active">Đặt lại mật Khẩu</li>
                 </ul>
             </div>
         </div>
@@ -24,49 +20,36 @@
             <div class="d-flex justify-content-center">
                 <div class="col-sm-12 col-md-12 col-xs-12 col-lg-6">
                     <!-- Login Form s-->
-                    <form action="{{ route('login') }}" method="POST">
+                    <form action="{{ route('reset.update') }}" method="POST">
                         @csrf
                         <div class="login-form">
-                            <h4 class="login-title">Đăng nhập</h4>
+                            <h4 class="login-title">Đặt lại mật Khẩu</h4>
                             <div class="row">
                                 <div class="col-md-12 col-12">
                                     <label>Địa chỉ email*</label>
                                     <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                        value="{{ old('email') }}" placeholder="Địa chỉ email" name="email">
+                                        value="{{ $email }}" placeholder="Nhập địa chỉ email" name="email">
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
                                 </div>
-                                <div class="col-12 mb--20">
-                                    <label>Mật khẩu</label>
-                                    <input type="password" placeholder="Mật khẩu"
-                                        class="form-control @error('password') is-invalid @enderror" name="password">
+                                <div class="col-md-6">
+                                    <label>Password</label>
+                                    <input type="password" placeholder="Password" name="password" class="form-control @error('password') is-invalid @enderror">
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
                                 </div>
-                                <div class="col-md-8">
-                                    <div class="check-box">
-                                        <input type="checkbox" id="remember_me">
-                                        <label for="remember_me">Ghi nhớ đăng nhập</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="forgotton-password_info">
-                                        <a href="{{route('show.form.forgot')}}"> Quên mật khẩu?</a>
-                                    </div>
+                                <div class="col-md-6">
+                                    <label>Confirm Password</label>
+                                    <input type="password" placeholder="Confirm Password" name="password_confirmation">
                                 </div>
                                 <div class="col-md-12">
-                                    <button class="kenne-login_btn" type="submit">Đăng nhập</button>
-                                </div>
-                                <div class="col-md-12 mt-3">
-                                    <div class="text-end">
-                                        <p>Bạn chưa có tài khoản ? <a href="{{route('form.register')}}" class="fw-bold text-decoration-underline">Đăng kí</a></p>
-                                    </div>
+                                    <button class="kenne-login_btn" type="submit">Gửi</button>
                                 </div>
                             </div>
                         </div>

@@ -13,8 +13,24 @@ class MyAccountController extends Controller
 
         $userID = Auth::user()->id;
 
-        $orders = Order::query()->where('user_id', '=', $userID)->latest('id')->get();
+        $statusOrder = Order::STATUS_ORDER;
 
-        return view('client.my-account', compact('orders'));
+        $statusPayment = Order::STATUS_PAYMENT;
+        // dd($statusOrder);
+        $ordersAll = Order::query()->where('user_id', '=', $userID)->latest('id')->get();
+
+        $ordersPending = Order::query()->where('user_id', '=', $userID)->where('status_order', 'pending')->latest('id')->get();
+
+        $ordersConfirmed = Order::query()->where('user_id', '=', $userID)->where('status_order', 'confirmed')->latest('id')->get();
+        
+        $ordersPreparingGoods = Order::query()->where('user_id', '=', $userID)->where('status_order', 'preparing_goods')->latest('id')->get();
+        
+        $ordersShipping = Order::query()->where('user_id', '=', $userID)->where('status_order', 'shipping')->latest('id')->get();
+        
+        $ordersDelivered = Order::query()->where('user_id', '=', $userID)->where('status_order', 'delivered')->latest('id')->get();
+        
+        $ordersCanceled = Order::query()->where('user_id', '=', $userID)->where('status_order', 'canceled')->latest('id')->get();
+
+        return view('client.my-account', compact('statusOrder','statusPayment','ordersAll', 'ordersPending', 'ordersConfirmed', 'ordersPreparingGoods', 'ordersShipping', 'ordersDelivered', 'ordersCanceled'));
     }
 }
