@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\ProductColor;
 use App\Models\ProductSize;
 use App\Models\ProductVariant;
+use App\Models\Rating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -34,7 +35,8 @@ class ProductController extends Controller
                   ->groupBy('product_id');
         }])->where('slug', '=', $slug)->firstOrFail();
 
-        
+        $ratings = Rating::query()->with("user")->where('product_id', $product->id)->latest('id')->get();
+
         $comments = Comment::query()->with('user')->where('product_id', $product->id)->get();
         
         $productVariants = ProductVariant::with(['color', 'size'])->where("product_id", $product->id)->get();
@@ -64,7 +66,7 @@ class ProductController extends Controller
                   ->groupBy('product_id');
         }])->where('is_hot_deal', true)->latest('id')->limit(8)->get();
         
-        return view('client.product-detail', compact('product', 'colors', 'sizes', 'priceTableVariants', 'comments', 'productBestSellers'));
+        return view('client.product-detail', compact('ratings','product', 'colors', 'sizes', 'priceTableVariants', 'comments', 'productBestSellers'));
     }
 
     public function productCatalogue(string $id) {

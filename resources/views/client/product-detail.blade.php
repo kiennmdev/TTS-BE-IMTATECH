@@ -78,11 +78,27 @@
                                 <span class="reference">Loại: {{ $product->catalogue->name }}</span>
                                 <div class="rating-box">
                                     <ul>
-                                        <li><i class="ion-android-star"></i></li>
-                                        <li><i class="ion-android-star"></i></li>
-                                        <li><i class="ion-android-star"></i></li>
-                                        <li class="silver-color"><i class="ion-android-star"></i></li>
-                                        <li class="silver-color"><i class="ion-android-star"></i></li>
+                                        @php
+                                            $sum = 0;
+                                            foreach ($product->ratings as $rating) {
+                                                $sum += $rating->rating;
+                                            }
+                                            $average = round($sum / count($product->ratings), 1);
+
+                                            $integerNumber = floor($average);
+
+                                        @endphp
+
+                                        @for ($i = 0; $i < round($average); $i++)
+                                            <li><i class="ion-ios-star"></i></li>
+                                        @endfor
+                                        @if ($average >= $integerNumber + 0.5)
+                                            <li class="silver-color"><i class="ion-ios-star-half"></i></li>
+                                        @endif
+
+                                        @for ($i = 0; $i < round(5 - $average); $i++)
+                                            <li class="silver-color"><i class="ion-ios-star-outline"></i></li>
+                                        @endfor
                                     </ul>
                                 </div>
                                 <div class="sp-essential_stuff">
@@ -239,7 +255,8 @@
                                 <li><a data-bs-toggle="tab" href="#comments"><span>Bình Luận</span></a>
                                 </li>
                                 {{-- <li><a data-bs-toggle="tab" href="#specification"><span>Specification</span></a></li> --}}
-                                <li><a data-bs-toggle="tab" href="#reviews"><span>Đánh Giá (1)</span></a></li>
+                                <li><a data-bs-toggle="tab" href="#reviews"><span>Đánh Giá
+                                            ({{ count($ratings) }})</span></a></li>
                             </ul>
                         </div>
                         <div class="tab-content uren-tab_content">
@@ -285,7 +302,7 @@
                                                 </div>
                                                 <div class="text col-11 rounded-pill ps-4 pt-3"
                                                     style="background-color: #f5f5f5">
-                                                    <span>{{ $comment->user->name }}</span>
+                                                    <span class="fw-bold">{{ $comment->user->name }}</span>
                                                     <span><sup
                                                             class="text-secondary">{{ $comment->created_at }}</sup></span>
                                                     <p>
@@ -330,62 +347,35 @@
                                         <div id="review">
                                             <table class="table table-striped table-bordered">
                                                 <tbody>
-                                                    <tr>
-                                                        <td style="width: 50%;"><strong>Customer</strong></td>
-                                                        <td class="text-right">26/10/19</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="2">
-                                                            <p>Good product! Thank you very much</p>
-                                                            <div class="rating-box">
-                                                                <ul>
-                                                                    <li><i class="ion-android-star"></i></li>
-                                                                    <li><i class="ion-android-star"></i></li>
-                                                                    <li><i class="ion-android-star"></i></li>
-                                                                    <li><i class="ion-android-star"></i></li>
-                                                                    <li><i class="ion-android-star"></i></li>
+                                                    @foreach ($ratings as $rating)
+                                                        <div class="content row p-2">
+                                                            <div class="avatar col-1">
+                                                                <img src="{{ Storage::url($rating->user->avatar) }}"
+                                                                    alt="" width="100%" class="rounded-circle">
+                                                            </div>
+                                                            <div class="text col-11 rounded-pill ps-4 pt-3"
+                                                                style="background-color: #f5f5f5">
+                                                                <span class="fw-bold">{{ $rating->user->name }}</span>
+                                                                <span><sup
+                                                                        class="text-secondary">{{ $rating->created_at }}</sup></span>
+                                                                <p class="mb-0">
+                                                                    {{ $rating->content }}
+                                                                </p>
+                                                                <ul class="d-flex">
+                                                                    @for ($i = 0; $i < $rating->rating; $i++)
+                                                                        <li style="color: #A8741A"><i
+                                                                                class="ion-android-star"></i></li>
+                                                                    @endfor
+                                                                    @for ($i = 0; $i < 5 - $rating->rating; $i++)
+                                                                        <li style="color: #A8741A"><i
+                                                                                class="ion-android-star-outline"></i></li>
+                                                                    @endfor
                                                                 </ul>
                                                             </div>
-                                                        </td>
-                                                    </tr>
+                                                        </div>
+                                                    @endforeach
                                                 </tbody>
                                             </table>
-                                        </div>
-                                        <h2>Write a review</h2>
-                                        <div class="form-group required">
-                                            <div class="col-sm-12 p-0">
-                                                <label>Your Email <span class="required">*</span></label>
-                                                <input class="review-input" type="email" name="con_email"
-                                                    id="con_email" required>
-                                            </div>
-                                        </div>
-                                        <div class="form-group required second-child">
-                                            <div class="col-sm-12 p-0">
-                                                <label class="control-label">Share your opinion</label>
-                                                <textarea class="review-textarea" name="con_message" id="con_message"></textarea>
-                                                <div class="help-block"><span class="text-danger">Note:</span> HTML is
-                                                    not
-                                                    translated!</div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group last-child required">
-                                            <div class="col-sm-12 p-0">
-                                                <div class="your-opinion">
-                                                    <label>Your Rating</label>
-                                                    <span>
-                                                        <select class="star-rating">
-                                                            <option value="1">1</option>
-                                                            <option value="2">2</option>
-                                                            <option value="3">3</option>
-                                                            <option value="4">4</option>
-                                                            <option value="5">5</option>
-                                                        </select>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="kenne-btn-ps_right">
-                                                <button class="kenne-btn">Continue</button>
-                                            </div>
                                         </div>
                                     </form>
                                 </div>
@@ -499,11 +489,27 @@
                                             </div>
                                             <div class="rating-box">
                                                 <ul>
-                                                    <li><i class="ion-ios-star"></i></li>
-                                                    <li><i class="ion-ios-star"></i></li>
-                                                    <li><i class="ion-ios-star"></i></li>
-                                                    <li><i class="ion-ios-star"></i></li>
-                                                    <li><i class="ion-ios-star"></i></li>
+                                                    @php
+                                                        $sum = 0;
+                                                        foreach ($productBestSeller->ratings as $rating) {
+                                                            $sum += $rating->rating;
+                                                        }
+                                                        $average = round($sum / count($productBestSeller->ratings), 1);
+
+                                                        $integerNumber = floor($average);
+
+                                                    @endphp
+
+                                                    @for ($i = 0; $i < round($average); $i++)
+                                                        <li><i class="ion-ios-star"></i></li>
+                                                    @endfor
+                                                    @if ($average >= $integerNumber + 0.5)
+                                                        <li class="silver-color"><i class="ion-ios-star-half"></i></li>
+                                                    @endif
+
+                                                    @for ($i = 0; $i < round(5 - $average); $i++)
+                                                        <li class="silver-color"><i class="ion-ios-star-outline"></i></li>
+                                                    @endfor
                                                 </ul>
                                             </div>
                                         </div>

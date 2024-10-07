@@ -12,8 +12,7 @@ use App\Http\Controllers\Client\ProductController;
 use App\Http\Controllers\Client\CommentController;
 use App\Http\Controllers\Client\OrderController;
 use App\Http\Controllers\Client\PaymentController;
-
-
+use App\Http\Controllers\Client\RatingController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -71,7 +70,9 @@ Route::middleware(['is.login'])->group(function () {
     
     Route::get('/my-account', [MyAccountController::class, 'index'])->name('my.account');
 
-    Route::get("cancel/order/{order}", [OrderController::class, 'canceledOrder'])->name('canceled.order');
+    Route::get("/cancel/order/{order}", [OrderController::class, 'canceledOrder'])->name('canceled.order');
+
+    Route::post('/rating',[RatingController::class, 'rating'])->name('rating');
 
     Route::get('/order/detail/{order}', [OrderController::class, 'detail'])->name('order.detail');
 

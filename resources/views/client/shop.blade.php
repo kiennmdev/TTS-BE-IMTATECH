@@ -183,12 +183,27 @@
                                                 </div>
                                                 <div class="rating-box">
                                                     <ul>
+                                                        @php
+                                                        $sum = 0;
+                                                        foreach ($product->ratings as $rating) {
+                                                            $sum += $rating->rating;
+                                                        }
+                                                        $average = round($sum / count($product->ratings), 1);
+
+                                                        $integerNumber = floor($average);
+                                                        
+                                                    @endphp
+                                                    
+                                                    @for ($i = 0; $i < round($average); $i++)
                                                         <li><i class="ion-ios-star"></i></li>
-                                                        <li><i class="ion-ios-star"></i></li>
-                                                        <li><i class="ion-ios-star"></i></li>
+                                                    @endfor
+                                                    @if ($average >= ($integerNumber + 0.5))
                                                         <li class="silver-color"><i class="ion-ios-star-half"></i></li>
-                                                        <li class="silver-color"><i class="ion-ios-star-outline"></i>
-                                                        </li>
+                                                    @endif
+                                                    
+                                                    @for ($i = 0; $i < round(5 - $average); $i++)
+                                                        <li class="silver-color"><i class="ion-ios-star-outline"></i></li>
+                                                    @endfor
                                                     </ul>
                                                 </div>
                                             </div>
@@ -219,12 +234,27 @@
                                                 </h6>
                                                 <div class="rating-box">
                                                     <ul>
+                                                        @php
+                                                        $sum = 0;
+                                                        foreach ($product->ratings as $rating) {
+                                                            $sum += $rating->rating;
+                                                        }
+                                                        $average = round($sum / count($product->ratings), 1);
+
+                                                        $integerNumber = floor($average);
+                                                        
+                                                    @endphp
+                                                    
+                                                    @for ($i = 0; $i < round($average); $i++)
                                                         <li><i class="ion-ios-star"></i></li>
-                                                        <li><i class="ion-ios-star"></i></li>
-                                                        <li><i class="ion-ios-star"></i></li>
+                                                    @endfor
+                                                    @if ($average >= ($integerNumber + 0.5))
                                                         <li class="silver-color"><i class="ion-ios-star-half"></i></li>
-                                                        <li class="silver-color"><i class="ion-ios-star-outline"></i>
-                                                        </li>
+                                                    @endif
+                                                    
+                                                    @for ($i = 0; $i < round(5 - $average); $i++)
+                                                        <li class="silver-color"><i class="ion-ios-star-outline"></i></li>
+                                                    @endfor
                                                     </ul>
                                                 </div>
                                                 <div class="product-short_desc">

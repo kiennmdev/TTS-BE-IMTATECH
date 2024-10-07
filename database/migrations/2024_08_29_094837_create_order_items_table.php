@@ -29,6 +29,7 @@ return new class extends Migration
             //Sao lưu thông tin sản phẩm biến thể
             $table->string('variant_size_name');
             $table->string('variant_color_name');
+            $table->boolean('is_rating')->default(false);
             $table->timestamps();
         });
     }

@@ -20,9 +20,19 @@
     </div>
     <!-- Kenne's Breadcrumb Area End Here -->
     <!-- Begin Kenne's Page Content Area -->
+    
     <main class="page-content">
+        
         <div class="account-page-area">
+            
             <div class="container">
+                @session('success')
+                <div class="alert alert-success d-flex align-items-center" role="alert">
+                    <div>
+                      {{session("success")}}
+                    </div>
+                  </div>
+                @endsession
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="tab-content myaccount-tab-content" id="account-page-tab-content">
@@ -100,55 +110,68 @@
                                                         <td>{{ $item->quantity }}</td>
                                                         <td>{{ $item->product_price_sale * $item->quantity }}<sup>đ</sup>
                                                         </td>
-                                                        @if ($orderItems->status_order == 'delivered')
-                                                            <td>
+                                                        @if ($orderItems->status_order == 'delivered' && $orderItems->status_payment == 'paid' && $item->is_rating == false)
+                                                        <td>
                                                                 <button type="button" class="kenne-btn kenne-btn_sm"
                                                                     style="width: 100px;" data-bs-toggle="modal"
-                                                                    data-bs-target="#exampleModal{{$item->id}}">Viết đánh
+                                                                    data-bs-target="#exampleModal{{ $item->id }}">Viết
+                                                                    đánh
                                                                     giá</button>
                                                             </td>
+                                                            <!-- Modal -->
+                                                            <div class="modal fade" id="exampleModal{{ $item->id }}"
+                                                                tabindex="-1" aria-labelledby="exampleModalLabel"
+                                                                aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="exampleModalLabel">
+                                                                                Đánh giá
+                                                                                sản phẩm này</h5>
+                                                                        </div>
+                                                                        <form action="{{route('rating')}}" method="POST">
+                                                                            @csrf
+                                                                            <input type="hidden" name="product_variant_id" value="{{$item->product_variant_id}}">
+                                                                            <input type="hidden" name="order_item_id" value="{{$item->id}}">
+                                                                            <div class="modal-body">
+                                                                                <div class="mb-3">
+                                                                                    <label for=""
+                                                                                        class="form-label">Mức độ hài
+                                                                                        lòng</label>
+                                                                                    <select name="rating" id=""
+                                                                                        class="form-select">
+                                                                                        <option value="5">Rất Tốt
+                                                                                        </option>
+                                                                                        <option value="4">Tốt</option>
+                                                                                        <option value="3">Tạm</option>
+                                                                                        <option value="2">Kém</option>
+                                                                                        <option value="1">Rất Tệ
+                                                                                        </option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="mb-3">
+                                                                                    <label for="rating"
+                                                                                        class="form-label">Viết đánh
+                                                                                        giá</label>
+                                                                                    <textarea class="form-control" id="rating" rows="3" name="content"
+                                                                                        placeholder="Bạn nghĩ như thế nào về kiểu dáng, độ vừa vặn, kích thước, màu sắc"></textarea>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                    style="background: gray; padding:5px 10px"
+                                                                                    class="btn btn-secondary"
+                                                                                    data-bs-dismiss="modal">Đóng</button>
+                                                                                <button type="submit"
+                                                                                    style="background: blue; padding:5px 10px"
+                                                                                    class="btn btn-primary">Gửi</button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         @endif
                                                     </tr>
-                                                    <!-- Modal -->
-                                                    <div class="modal fade" id="exampleModal{{$item->id}}" tabindex="-1"
-                                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                        <div class="modal-dialog">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title" id="exampleModalLabel">Đánh giá
-                                                                        sản phẩm này</h5>
-                                                                </div>
-                                                                <form action="" method="POST">
-                                                                    @csrf
-                                                                    <div class="modal-body">
-                                                                        <div class="mb-3">
-                                                                            <label for="" class="form-label">Mức độ hài lòng</label>
-                                                                            <select name="" id="" class="form-select">
-                                                                                <option value="5">Rất Tốt</option>
-                                                                                <option value="4">Tốt</option>
-                                                                                <option value="3">Tạm</option>
-                                                                                <option value="2">Kém</option>
-                                                                                <option value="1">Rất Tệ</option>
-                                                                            </select>
-                                                                          </div>
-                                                                          <div class="mb-3">
-                                                                            <label for="rating" class="form-label">Viết đánh giá</label>
-                                                                            <textarea class="form-control" id="rating" rows="3" placeholder="Bạn nghĩ như thế nào về kiểu dáng, độ vừa vặn, kích thước, màu sắc"></textarea>
-                                                                          </div>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                        <button type="button"
-                                                                            style="background: gray; padding:5px 10px"
-                                                                            class="btn btn-secondary"
-                                                                            data-bs-dismiss="modal">Đóng</button>
-                                                                        <button type="submit"
-                                                                            style="background: blue; padding:5px 10px"
-                                                                            class="btn btn-primary">Gửi</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 @endforeach
 
                                                 @php

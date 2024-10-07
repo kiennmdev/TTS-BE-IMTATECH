@@ -129,6 +129,8 @@ class OrderController extends Controller
 
         $orderItems  = Order::with('order_items')->find($order->id);
 
+        // dd($orderItems->toArray());
+
         return view('client.order-detail', compact('orderItems'));
     }
 

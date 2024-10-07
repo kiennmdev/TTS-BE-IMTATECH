@@ -20,10 +20,15 @@ class OrderItem extends Model
         'product_price_sale',
         'variant_size_name',
         'variant_color_name',
+        'is_rating'
     ];
 
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
+
+    protected $cast = [
+        'is_rating' => 'boolean'
+    ];
 }

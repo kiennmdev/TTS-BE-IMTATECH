@@ -152,6 +152,13 @@
                     </a>
 
                 </li> <!-- end Dashboard Menu -->
+
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{route('admin.rating.index')}}">
+                        <i class="ri-star-half-line"></i> <span data-key="t-layouts">Đánh Giá</span>
+                    </a>
+
+                </li> <!-- end Dashboard Menu -->
                 
                 <li class="nav-item">
                     <a class="nav-link menu-link" href="{{route('admin.coupon.index')}}">

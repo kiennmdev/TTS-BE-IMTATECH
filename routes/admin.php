@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ProductColorController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductSizeController;
 use App\Http\Controllers\Admin\ProductVariantController;
+use App\Http\Controllers\Admin\RatingController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\UserController;
 
@@ -73,7 +74,7 @@ Route::prefix('admin')
                 Route::delete('{id}/delete', [ProductSizeController::class, 'destroy'])->name('destroy');
             });
 
-            Route::prefix('product/tags')
+        Route::prefix('product/tags')
             ->as('product.tags.')
             ->group(function () {
                 Route::get('/', [TagController::class, 'index'])->name('index');
@@ -81,6 +82,11 @@ Route::prefix('admin')
                 Route::put('/{id}', [TagController::class, 'update'])->name('update');
                 Route::delete('{id}/delete', [TagController::class, 'destroy'])->name('destroy');
             });
+        
+        Route::prefix('rating')->as('rating.')->group(function(){
+            Route::get('/', [RatingController::class, 'index'])->name('index');
+            Route::get('/detail/{id}', [RatingController::class, 'detail'])->name('detail');
+        });
     });
 
 Route::prefix('admin')->as('admin.')->group(function () {

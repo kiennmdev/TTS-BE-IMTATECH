@@ -94,9 +94,10 @@
 
                                 @foreach ($coupons as $coupon)
                                     <div class="coupon">
-                                        <div class="code">{{$coupon->code}}</div>
-                                        <div class="discount">{{$coupon->description}}</div>
-                                        <div class="expiry">Hết hạn vào: {{\Carbon\Carbon::parse($coupon->expiry)->format('d-m-Y')}}</div>
+                                        <div class="code">{{ $coupon->code }}</div>
+                                        <div class="discount">{{ $coupon->description }}</div>
+                                        <div class="expiry">Hết hạn vào:
+                                            {{ \Carbon\Carbon::parse($coupon->expiry)->format('d-m-Y') }}</div>
                                     </div>
                                 @endforeach
 
@@ -212,19 +213,28 @@
                                             </h3>
                                             <div class="price-box">
                                                 @php
+                                                    $min_price = $newProduct->variants[0]->min_price_sale;
+                                                    $max_price = $newProduct->variants[0]->max_price_sale;
+                                                    if (
+                                                        $newProduct->variants[0]->min_price_sale == 0 &&
+                                                        $newProduct->variants[0]->max_price_sale != 0
+                                                    ) {
+                                                        $min_price = $newProduct->variants[0]->max_price_sale;
+                                                        $max_price = $newProduct->variants[0]->max_price_regular;
+                                                    } elseif (
+                                                        $newProduct->variants[0]->min_price_sale != 0 &&
+                                                        $newProduct->variants[0]->max_price_sale == 0
+                                                    ) {
                                                         $min_price = $newProduct->variants[0]->min_price_sale;
-                                                        $max_price = $newProduct->variants[0]->max_price_sale;
-                                                        if($newProduct->variants[0]->min_price_sale == 0 && $newProduct->variants[0]->max_price_sale != 0) {
-                                                            $min_price = $newProduct->variants[0]->max_price_sale;
-                                                            $max_price = $newProduct->variants[0]->max_price_regular;
-                                                        } else if($newProduct->variants[0]->min_price_sale != 0 && $newProduct->variants[0]->max_price_sale == 0){
-                                                            $min_price = $newProduct->variants[0]->min_price_sale;
-                                                            $max_price = $newProduct->variants[0]->max_price_regular;
-                                                        } else if($newProduct->variants[0]->min_price_sale == 0 && $newProduct->variants[0]->max_price_sale == 0){
-                                                            $min_price = $newProduct->variants[0]->min_price_regular;
-                                                            $max_price = $newProduct->variants[0]->max_price_regular;
-                                                        }
-                                                    @endphp
+                                                        $max_price = $newProduct->variants[0]->max_price_regular;
+                                                    } elseif (
+                                                        $newProduct->variants[0]->min_price_sale == 0 &&
+                                                        $newProduct->variants[0]->max_price_sale == 0
+                                                    ) {
+                                                        $min_price = $newProduct->variants[0]->min_price_regular;
+                                                        $max_price = $newProduct->variants[0]->max_price_regular;
+                                                    }
+                                                @endphp
                                                 <span
                                                     class="new-price">{{ number_format($min_price, 0, ',', '.') }}<sup>đ</sup>
                                                 </span>
@@ -235,11 +245,27 @@
                                             </div>
                                             <div class="rating-box">
                                                 <ul>
-                                                    <li><i class="ion-ios-star"></i></li>
-                                                    <li><i class="ion-ios-star"></i></li>
-                                                    <li><i class="ion-ios-star"></i></li>
-                                                    <li class="silver-color"><i class="ion-ios-star-half"></i></li>
-                                                    <li class="silver-color"><i class="ion-ios-star-outline"></i></li>
+                                                    @php
+                                                        $sum = 0;
+                                                        foreach ($newProduct->ratings as $rating) {
+                                                            $sum += $rating->rating;
+                                                        }
+                                                        $average = round($sum / count($newProduct->ratings), 1);
+
+                                                        $integerNumber = floor($average);
+                                                        
+                                                    @endphp
+                                                    
+                                                    @for ($i = 0; $i < round($average); $i++)
+                                                        <li><i class="ion-ios-star"></i></li>
+                                                    @endfor
+                                                    @if ($average >= ($integerNumber + 0.5))
+                                                        <li class="silver-color"><i class="ion-ios-star-half"></i></li>
+                                                    @endif
+                                                    
+                                                    @for ($i = 0; $i < round(5 - $average); $i++)
+                                                        <li class="silver-color"><i class="ion-ios-star-outline"></i></li>
+                                                    @endfor
                                                 </ul>
                                             </div>
                                         </div>
@@ -357,34 +383,57 @@
                                                     </h3>
                                                     <div class="price-box">
                                                         @php
-                                                        $min_price = $product->variants[0]->min_price_sale;
-                                                        $max_price = $product->variants[0]->max_price_sale;
-                                                        if($product->variants[0]->min_price_sale == 0 && $product->variants[0]->max_price_sale != 0) {
-                                                            $min_price = $product->variants[0]->max_price_sale;
-                                                            $max_price = $product->variants[0]->max_price_regular;
-                                                        } else if($product->variants[0]->min_price_sale != 0 && $product->variants[0]->max_price_sale == 0){
                                                             $min_price = $product->variants[0]->min_price_sale;
-                                                            $max_price = $product->variants[0]->max_price_regular;
-                                                        } else if($product->variants[0]->min_price_sale == 0 && $product->variants[0]->max_price_sale == 0){
-                                                            $min_price = $product->variants[0]->min_price_regular;
-                                                            $max_price = $product->variants[0]->max_price_regular;
-                                                        }
-                                                    @endphp
+                                                            $max_price = $product->variants[0]->max_price_sale;
+                                                            if (
+                                                                $product->variants[0]->min_price_sale == 0 &&
+                                                                $product->variants[0]->max_price_sale != 0
+                                                            ) {
+                                                                $min_price = $product->variants[0]->max_price_sale;
+                                                                $max_price = $product->variants[0]->max_price_regular;
+                                                            } elseif (
+                                                                $product->variants[0]->min_price_sale != 0 &&
+                                                                $product->variants[0]->max_price_sale == 0
+                                                            ) {
+                                                                $min_price = $product->variants[0]->min_price_sale;
+                                                                $max_price = $product->variants[0]->max_price_regular;
+                                                            } elseif (
+                                                                $product->variants[0]->min_price_sale == 0 &&
+                                                                $product->variants[0]->max_price_sale == 0
+                                                            ) {
+                                                                $min_price = $product->variants[0]->min_price_regular;
+                                                                $max_price = $product->variants[0]->max_price_regular;
+                                                            }
+                                                        @endphp
                                                         <span
                                                             class="new-price">{{ number_format($min_price, 0, ',', '.') }}<sup>đ</sup></span>
-                                                            -
+                                                        -
                                                         <span
                                                             class="new-price">{{ number_format($max_price, 0, ',', '.') }}<sup>đ</sup></span>
                                                     </div>
                                                     <div class="rating-box">
                                                         <ul>
+                                                            @php
+                                                            $sum = 0;
+                                                            foreach ($product->ratings as $rating) {
+                                                                $sum += $rating->rating;
+                                                            }
+                                                            $average = round($sum / count($product->ratings), 1);
+    
+                                                            $integerNumber = floor($average);
+                                                            
+                                                        @endphp
+                                                        
+                                                        @for ($i = 0; $i < round($average); $i++)
                                                             <li><i class="ion-ios-star"></i></li>
-                                                            <li><i class="ion-ios-star"></i></li>
-                                                            <li><i class="ion-ios-star"></i></li>
-                                                            <li class="silver-color"><i class="ion-ios-star-half"></i>
-                                                            </li>
-                                                            <li class="silver-color"><i class="ion-ios-star-outline"></i>
-                                                            </li>
+                                                        @endfor
+                                                        @if ($average >= ($integerNumber + 0.5))
+                                                            <li class="silver-color"><i class="ion-ios-star-half"></i></li>
+                                                        @endif
+                                                        
+                                                        @for ($i = 0; $i < round(5 - $average); $i++)
+                                                            <li class="silver-color"><i class="ion-ios-star-outline"></i></li>
+                                                        @endfor
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -457,22 +506,31 @@
                                             </h3>
                                             <div class="price-box">
                                                 @php
+                                                    $min_price = $productBestSeller->variants[0]->min_price_sale;
+                                                    $max_price = $productBestSeller->variants[0]->max_price_sale;
+                                                    if (
+                                                        $productBestSeller->variants[0]->min_price_sale == 0 &&
+                                                        $productBestSeller->variants[0]->max_price_sale != 0
+                                                    ) {
+                                                        $min_price = $productBestSeller->variants[0]->max_price_sale;
+                                                        $max_price = $productBestSeller->variants[0]->max_price_regular;
+                                                    } elseif (
+                                                        $productBestSeller->variants[0]->min_price_sale != 0 &&
+                                                        $productBestSeller->variants[0]->max_price_sale == 0
+                                                    ) {
                                                         $min_price = $productBestSeller->variants[0]->min_price_sale;
-                                                        $max_price = $productBestSeller->variants[0]->max_price_sale;
-                                                        if($productBestSeller->variants[0]->min_price_sale == 0 && $productBestSeller->variants[0]->max_price_sale != 0) {
-                                                            $min_price = $productBestSeller->variants[0]->max_price_sale;
-                                                            $max_price = $productBestSeller->variants[0]->max_price_regular;
-                                                        } else if($productBestSeller->variants[0]->min_price_sale != 0 && $productBestSeller->variants[0]->max_price_sale == 0){
-                                                            $min_price = $productBestSeller->variants[0]->min_price_sale;
-                                                            $max_price = $productBestSeller->variants[0]->max_price_regular;
-                                                        } else if($productBestSeller->variants[0]->min_price_sale == 0 && $productBestSeller->variants[0]->max_price_sale == 0){
-                                                            $min_price = $productBestSeller->variants[0]->min_price_regular;
-                                                            $max_price = $productBestSeller->variants[0]->max_price_regular;
-                                                        }
-                                                    @endphp
+                                                        $max_price = $productBestSeller->variants[0]->max_price_regular;
+                                                    } elseif (
+                                                        $productBestSeller->variants[0]->min_price_sale == 0 &&
+                                                        $productBestSeller->variants[0]->max_price_sale == 0
+                                                    ) {
+                                                        $min_price = $productBestSeller->variants[0]->min_price_regular;
+                                                        $max_price = $productBestSeller->variants[0]->max_price_regular;
+                                                    }
+                                                @endphp
                                                 <span
                                                     class="new-price">{{ number_format($min_price, 0, ',', '.') }}<sup>đ</sup></span>
-                                                    -
+                                                -
                                                 <span
                                                     class="new-price">{{ number_format($max_price, 0, ',', '.') }}<sup>đ</sup></span>
                                             </div>
